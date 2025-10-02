@@ -1,37 +1,52 @@
 import React, { useState } from 'react';
-import { CreditCard, DollarSign, Search, Filter, CheckCircle, XCircle, Clock, Receipt } from 'lucide-react';
+import { CreditCard, DollarSign, Search, Filter, CheckCircle, XCircle, Clock, Receipt, Plus } from 'lucide-react';
 import { Payment, Appointment, Patient } from '../types';
+import { Modal } from './Modal';
 
 interface PaymentManagementProps {
   payments: Payment[];
   appointments: Appointment[];
   patients: Patient[];
   onUpdatePayment: (id: string, payment: Partial<Payment>) => void;
+  onAddPayment: (payment: Omit<Payment, 'id' | 'createdAt'>) => void;
 }
 
-export function PaymentManagement({ 
-  payments, 
-  appointments, 
-  patients, 
-  onUpdatePayment 
+export function PaymentManagement({
+  payments,
+  appointments,
+  patients,
+  onUpdatePayment,
+  onAddPayment
 }: PaymentManagementProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [methodFilter, setMethodFilter] = useState('all');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newPayment, setNewPayment] = useState({
+    patientId: '',
+    appointmentId: '',
+    amount: 0,
+    method: 'cash' as const,
+    status: 'pending' as const,
+    paymentType: 'regular' as const,
+    notes: ''
+  });
 
   const filteredPayments = payments.filter(payment => {
     const patient = patients.find(p => p.id === payment.patientId);
     const appointment = appointments.find(a => a.id === payment.appointmentId);
-    
-    const matchesSearch = 
+
+    const matchesSearch =
       patient?.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       patient?.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       payment.transactionId?.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = statusFilter === 'all' || payment.status === statusFilter;
     const matchesMethod = methodFilter === 'all' || payment.method === methodFilter;
-    
-    return matchesSearch && matchesStatus && matchesMethod;
+    const matchesType = typeFilter === 'all' || payment.paymentType === typeFilter;
+
+    return matchesSearch && matchesStatus && matchesMethod && matchesType;
   });
 
   const totalRevenue = payments
@@ -40,6 +55,10 @@ export function PaymentManagement({
 
   const pendingAmount = payments
     .filter(p => p.status === 'pending')
+    .reduce((sum, p) => sum + p.amount, 0);
+
+  const debtAmount = payments
+    .filter(p => p.paymentType === 'debt')
     .reduce((sum, p) => sum + p.amount, 0);
 
   const getStatusColor = (status: string) => {
@@ -74,18 +93,62 @@ export function PaymentManagement({
 
   const handleStatusChange = (paymentId: string, newStatus: string) => {
     const updateData: Partial<Payment> = { status: newStatus as any };
-    
+
     if (newStatus === 'paid' && !payments.find(p => p.id === paymentId)?.paidAt) {
       updateData.paidAt = new Date().toISOString();
     }
-    
+
     onUpdatePayment(paymentId, updateData);
+  };
+
+  const handleAddPayment = () => {
+    if (!newPayment.patientId || newPayment.amount <= 0) {
+      alert('Пожалуйста, заполните все обязательные поля');
+      return;
+    }
+
+    onAddPayment(newPayment);
+    setShowAddModal(false);
+    setNewPayment({
+      patientId: '',
+      appointmentId: '',
+      amount: 0,
+      method: 'cash',
+      status: 'pending',
+      paymentType: 'regular',
+      notes: ''
+    });
+  };
+
+  const getPaymentTypeLabel = (type: string) => {
+    switch (type) {
+      case 'debt': return 'В долг';
+      case 'prepayment': return 'Предоплата';
+      case 'regular': return 'Обычная оплата';
+      default: return type;
+    }
+  };
+
+  const getPaymentTypeColor = (type: string) => {
+    switch (type) {
+      case 'debt': return 'text-red-600';
+      case 'prepayment': return 'text-blue-600';
+      case 'regular': return 'text-gray-600';
+      default: return 'text-gray-600';
+    }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-900">Управление платежами</h1>
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="flex items-center space-x-2 px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
+        >
+          <Plus size={20} />
+          <span>Добавить платеж</span>
+        </button>
       </div>
 
       {/* Статистика */}
@@ -117,11 +180,11 @@ export function PaymentManagement({
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Всего транзакций</p>
-              <p className="text-2xl font-bold text-gray-900">{payments.length}</p>
+              <p className="text-sm font-medium text-gray-600">Долги</p>
+              <p className="text-2xl font-bold text-red-600">{debtAmount.toLocaleString()} ₽</p>
             </div>
-            <div className="h-12 w-12 bg-sky-100 rounded-lg flex items-center justify-center">
-              <CreditCard className="h-6 w-6 text-sky-600" />
+            <div className="h-12 w-12 bg-red-100 rounded-lg flex items-center justify-center">
+              <XCircle className="h-6 w-6 text-red-600" />
             </div>
           </div>
         </div>
@@ -164,6 +227,17 @@ export function PaymentManagement({
             <option value="insurance">Страховка</option>
             <option value="transfer">Перевод</option>
           </select>
+
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+          >
+            <option value="all">Все типы</option>
+            <option value="regular">Обычная</option>
+            <option value="debt">Долг</option>
+            <option value="prepayment">Предоплата</option>
+          </select>
         </div>
       </div>
 
@@ -178,6 +252,7 @@ export function PaymentManagement({
                 <tr className="border-b border-gray-200">
                   <th className="text-left py-3 px-4 font-medium text-gray-600">Пациент</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-600">Сумма</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-600">Тип</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-600">Метод</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-600">Статус</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-600">Дата</th>
@@ -202,6 +277,11 @@ export function PaymentManagement({
                       <td className="py-4 px-4">
                         <span className="font-semibold text-gray-900">
                           {payment.amount.toLocaleString()} ₽
+                        </span>
+                      </td>
+                      <td className="py-4 px-4">
+                        <span className={`font-medium ${getPaymentTypeColor(payment.paymentType)}`}>
+                          {getPaymentTypeLabel(payment.paymentType)}
                         </span>
                       </td>
                       <td className="py-4 px-4">
@@ -270,6 +350,127 @@ export function PaymentManagement({
           )}
         </div>
       </div>
+
+      {/* Модальное окно добавления платежа */}
+      <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title="Добавить новый платеж">
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Пациент *</label>
+            <select
+              value={newPayment.patientId}
+              onChange={(e) => setNewPayment({ ...newPayment, patientId: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+              required
+            >
+              <option value="">Выберите пациента</option>
+              {patients.map(patient => (
+                <option key={patient.id} value={patient.id}>
+                  {patient.firstName} {patient.lastName}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Прием (необязательно)</label>
+            <select
+              value={newPayment.appointmentId}
+              onChange={(e) => setNewPayment({ ...newPayment, appointmentId: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+            >
+              <option value="">Без привязки к приему</option>
+              {appointments
+                .filter(apt => apt.patientId === newPayment.patientId)
+                .map(appointment => {
+                  const doctor = patients.find(p => p.id === appointment.doctorId);
+                  return (
+                    <option key={appointment.id} value={appointment.id}>
+                      {new Date(appointment.date).toLocaleDateString('ru-RU')} - {appointment.time}
+                    </option>
+                  );
+                })}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Сумма *</label>
+            <input
+              type="number"
+              value={newPayment.amount || ''}
+              onChange={(e) => setNewPayment({ ...newPayment, amount: parseFloat(e.target.value) || 0 })}
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+              required
+              min="0"
+              step="0.01"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Тип платежа *</label>
+            <select
+              value={newPayment.paymentType}
+              onChange={(e) => setNewPayment({ ...newPayment, paymentType: e.target.value as any })}
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+            >
+              <option value="regular">Обычная оплата</option>
+              <option value="debt">В долг</option>
+              <option value="prepayment">Предоплата</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Способ оплаты *</label>
+            <select
+              value={newPayment.method}
+              onChange={(e) => setNewPayment({ ...newPayment, method: e.target.value as any })}
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+            >
+              <option value="cash">Наличные</option>
+              <option value="card">Карта</option>
+              <option value="insurance">Страховка</option>
+              <option value="transfer">Перевод</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Статус *</label>
+            <select
+              value={newPayment.status}
+              onChange={(e) => setNewPayment({ ...newPayment, status: e.target.value as any })}
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+            >
+              <option value="pending">Ожидает</option>
+              <option value="paid">Оплачено</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Примечания</label>
+            <textarea
+              value={newPayment.notes}
+              onChange={(e) => setNewPayment({ ...newPayment, notes: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+              rows={3}
+              placeholder="Дополнительная информация о платеже"
+            />
+          </div>
+
+          <div className="flex space-x-3 pt-4">
+            <button
+              onClick={handleAddPayment}
+              className="flex-1 bg-sky-600 text-white py-2 px-4 rounded-lg hover:bg-sky-700 transition-colors"
+            >
+              Добавить платеж
+            </button>
+            <button
+              onClick={() => setShowAddModal(false)}
+              className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors"
+            >
+              Отмена
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

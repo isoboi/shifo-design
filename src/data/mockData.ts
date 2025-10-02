@@ -121,6 +121,7 @@ export const mockPayments: Payment[] = [
     amount: 3500,
     method: 'card',
     status: 'paid',
+    paymentType: 'regular',
     transactionId: 'TXN001234',
     createdAt: '2024-01-26T14:30:00Z',
     paidAt: '2024-01-26T14:35:00Z'
@@ -132,6 +133,7 @@ export const mockPayments: Payment[] = [
     amount: 2500,
     method: 'cash',
     status: 'pending',
+    paymentType: 'regular',
     createdAt: '2024-01-25T10:00:00Z'
   }
 ];

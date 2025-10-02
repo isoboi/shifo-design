@@ -68,6 +68,7 @@ function App() {
         amount: doctor.consultationFee,
         method: 'cash',
         status: 'pending',
+        paymentType: 'regular',
         createdAt: new Date().toISOString()
       };
       setPayments([...payments, newPayment]);
@@ -85,6 +86,16 @@ function App() {
   };
   const handleUpdatePayment = (id: string, updates: Partial<Payment>) => {
     setPayments(payments.map(p => p.id === id ? { ...p, ...updates } : p));
+  };
+
+  const handleAddPayment = (paymentData: Omit<Payment, 'id' | 'createdAt'>) => {
+    const newPayment: Payment = {
+      ...paymentData,
+      id: (Date.now() + Math.random()).toString(),
+      createdAt: new Date().toISOString(),
+      paidAt: paymentData.status === 'paid' ? new Date().toISOString() : undefined
+    };
+    setPayments([...payments, newPayment]);
   };
 
   const renderContent = () => {
@@ -134,6 +145,7 @@ function App() {
             appointments={appointments}
             patients={patients}
             onUpdatePayment={handleUpdatePayment}
+            onAddPayment={handleAddPayment}
           />
         );
       case 'analytics':

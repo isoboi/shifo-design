@@ -54,7 +54,9 @@ export interface Payment {
   amount: number;
   method: 'cash' | 'card' | 'insurance' | 'transfer';
   status: 'paid' | 'pending' | 'failed' | 'refunded';
+  paymentType: 'regular' | 'debt' | 'prepayment';
   transactionId?: string;
+  notes?: string;
   createdAt: string;
   paidAt?: string;
 }
