@@ -355,18 +355,15 @@ export function PaymentManagement({
       <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title="Добавить новый платеж" size="xl">
         <div className="space-y-6">
           {/* Информация о пациенте */}
-          <div className="bg-gradient-to-br from-sky-50 to-blue-50 p-5 rounded-xl border border-sky-100">
-            <h4 className="text-sm font-semibold text-sky-900 mb-3 flex items-center">
-              <div className="w-1.5 h-1.5 bg-sky-600 rounded-full mr-2"></div>
-              Информация о пациенте
-            </h4>
+          <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+            <h4 className="text-sm font-semibold text-gray-900 mb-3">Информация о пациенте</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Пациент *</label>
                 <select
                   value={newPayment.patientId}
                   onChange={(e) => setNewPayment({ ...newPayment, patientId: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white shadow-sm transition-all"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white transition-all"
                   required
                 >
                   <option value="">Выберите пациента</option>
@@ -383,7 +380,7 @@ export function PaymentManagement({
                 <select
                   value={newPayment.appointmentId}
                   onChange={(e) => setNewPayment({ ...newPayment, appointmentId: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white shadow-sm transition-all"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white transition-all"
                   disabled={!newPayment.patientId}
                 >
                   <option value="">Без привязки к приему</option>
@@ -403,11 +400,8 @@ export function PaymentManagement({
           </div>
 
           {/* Детали платежа */}
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-5 rounded-xl border border-green-100">
-            <h4 className="text-sm font-semibold text-green-900 mb-3 flex items-center">
-              <div className="w-1.5 h-1.5 bg-green-600 rounded-full mr-2"></div>
-              Детали платежа
-            </h4>
+          <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+            <h4 className="text-sm font-semibold text-gray-900 mb-3">Детали платежа</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Сумма *</label>
@@ -416,13 +410,13 @@ export function PaymentManagement({
                     type="number"
                     value={newPayment.amount || ''}
                     onChange={(e) => setNewPayment({ ...newPayment, amount: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-4 py-2.5 pr-10 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white shadow-sm transition-all"
+                    className="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white transition-all"
                     required
                     min="0"
                     step="0.01"
                     placeholder="0.00"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₽</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">₽</span>
                 </div>
               </div>
 
@@ -434,8 +428,8 @@ export function PaymentManagement({
                     onClick={() => setNewPayment({ ...newPayment, paymentType: 'regular' })}
                     className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                       newPayment.paymentType === 'regular'
-                        ? 'bg-gray-600 text-white shadow-md'
-                        : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        ? 'bg-sky-600 text-white shadow-sm'
+                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                     }`}
                   >
                     Обычная
@@ -445,8 +439,8 @@ export function PaymentManagement({
                     onClick={() => setNewPayment({ ...newPayment, paymentType: 'debt' })}
                     className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                       newPayment.paymentType === 'debt'
-                        ? 'bg-red-600 text-white shadow-md'
-                        : 'bg-white text-red-600 border border-red-200 hover:bg-red-50'
+                        ? 'bg-sky-600 text-white shadow-sm'
+                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                     }`}
                   >
                     Долг
@@ -456,8 +450,8 @@ export function PaymentManagement({
                     onClick={() => setNewPayment({ ...newPayment, paymentType: 'prepayment' })}
                     className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                       newPayment.paymentType === 'prepayment'
-                        ? 'bg-blue-600 text-white shadow-md'
-                        : 'bg-white text-blue-600 border border-blue-200 hover:bg-blue-50'
+                        ? 'bg-sky-600 text-white shadow-sm'
+                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                     }`}
                   >
                     Предоплата
@@ -468,11 +462,8 @@ export function PaymentManagement({
           </div>
 
           {/* Способ и статус оплаты */}
-          <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-5 rounded-xl border border-amber-100">
-            <h4 className="text-sm font-semibold text-amber-900 mb-3 flex items-center">
-              <div className="w-1.5 h-1.5 bg-amber-600 rounded-full mr-2"></div>
-              Способ и статус оплаты
-            </h4>
+          <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+            <h4 className="text-sm font-semibold text-gray-900 mb-3">Способ и статус оплаты</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Способ оплаты *</label>
@@ -482,8 +473,8 @@ export function PaymentManagement({
                     onClick={() => setNewPayment({ ...newPayment, method: 'cash' })}
                     className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center space-x-2 ${
                       newPayment.method === 'cash'
-                        ? 'bg-green-600 text-white shadow-md'
-                        : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        ? 'bg-sky-600 text-white shadow-sm'
+                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                     }`}
                   >
                     <DollarSign size={16} />
@@ -494,8 +485,8 @@ export function PaymentManagement({
                     onClick={() => setNewPayment({ ...newPayment, method: 'card' })}
                     className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center space-x-2 ${
                       newPayment.method === 'card'
-                        ? 'bg-blue-600 text-white shadow-md'
-                        : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        ? 'bg-sky-600 text-white shadow-sm'
+                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                     }`}
                   >
                     <CreditCard size={16} />
@@ -506,8 +497,8 @@ export function PaymentManagement({
                     onClick={() => setNewPayment({ ...newPayment, method: 'insurance' })}
                     className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center space-x-2 ${
                       newPayment.method === 'insurance'
-                        ? 'bg-purple-600 text-white shadow-md'
-                        : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        ? 'bg-sky-600 text-white shadow-sm'
+                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                     }`}
                   >
                     <Receipt size={16} />
@@ -518,8 +509,8 @@ export function PaymentManagement({
                     onClick={() => setNewPayment({ ...newPayment, method: 'transfer' })}
                     className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center space-x-2 ${
                       newPayment.method === 'transfer'
-                        ? 'bg-indigo-600 text-white shadow-md'
-                        : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        ? 'bg-sky-600 text-white shadow-sm'
+                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                     }`}
                   >
                     <CreditCard size={16} />
@@ -536,8 +527,8 @@ export function PaymentManagement({
                     onClick={() => setNewPayment({ ...newPayment, status: 'pending' })}
                     className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center space-x-2 ${
                       newPayment.status === 'pending'
-                        ? 'bg-yellow-600 text-white shadow-md'
-                        : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        ? 'bg-sky-600 text-white shadow-sm'
+                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                     }`}
                   >
                     <Clock size={16} />
@@ -548,8 +539,8 @@ export function PaymentManagement({
                     onClick={() => setNewPayment({ ...newPayment, status: 'paid' })}
                     className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center space-x-2 ${
                       newPayment.status === 'paid'
-                        ? 'bg-green-600 text-white shadow-md'
-                        : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                        ? 'bg-sky-600 text-white shadow-sm'
+                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                     }`}
                   >
                     <CheckCircle size={16} />
@@ -566,7 +557,7 @@ export function PaymentManagement({
             <textarea
               value={newPayment.notes}
               onChange={(e) => setNewPayment({ ...newPayment, notes: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white shadow-sm transition-all resize-none"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white transition-all resize-none"
               rows={3}
               placeholder="Дополнительная информация о платеже..."
             />
@@ -576,13 +567,13 @@ export function PaymentManagement({
           <div className="flex space-x-3 pt-2">
             <button
               onClick={handleAddPayment}
-              className="flex-1 bg-gradient-to-r from-sky-600 to-blue-600 text-white py-3 px-6 rounded-lg hover:from-sky-700 hover:to-blue-700 transition-all shadow-md hover:shadow-lg font-medium"
+              className="flex-1 bg-sky-600 text-white py-3 px-6 rounded-lg hover:bg-sky-700 transition-all shadow-sm hover:shadow font-medium"
             >
               Добавить платеж
             </button>
             <button
               onClick={() => setShowAddModal(false)}
-              className="flex-1 bg-white text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-50 transition-all border-2 border-gray-200 font-medium"
+              className="flex-1 bg-white text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-50 transition-all border-2 border-gray-300 font-medium"
             >
               Отмена
             </button>
