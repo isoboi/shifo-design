@@ -352,228 +352,214 @@ export function PaymentManagement({
       </div>
 
       {/* Модальное окно добавления платежа */}
-      <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title="Добавить новый платеж" size="xl">
-        <div className="space-y-6">
-          {/* Информация о пациенте */}
-          <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-            <h4 className="text-sm font-semibold text-gray-900 mb-3">Информация о пациенте</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Пациент *</label>
-                <select
-                  value={newPayment.patientId}
-                  onChange={(e) => setNewPayment({ ...newPayment, patientId: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white transition-all"
+      <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title="Добавить новый платеж" size="lg">
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Пациент *</label>
+              <select
+                value={newPayment.patientId}
+                onChange={(e) => setNewPayment({ ...newPayment, patientId: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white transition-all text-sm"
+                required
+              >
+                <option value="">Выберите пациента</option>
+                {patients.map(patient => (
+                  <option key={patient.id} value={patient.id}>
+                    {patient.firstName} {patient.lastName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Прием (необязательно)</label>
+              <select
+                value={newPayment.appointmentId}
+                onChange={(e) => setNewPayment({ ...newPayment, appointmentId: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white transition-all text-sm"
+                disabled={!newPayment.patientId}
+              >
+                <option value="">Без привязки к приему</option>
+                {appointments
+                  .filter(apt => apt.patientId === newPayment.patientId)
+                  .map(appointment => {
+                    const doctor = patients.find(p => p.id === appointment.doctorId);
+                    return (
+                      <option key={appointment.id} value={appointment.id}>
+                        {new Date(appointment.date).toLocaleDateString('ru-RU')} - {appointment.time}
+                      </option>
+                    );
+                  })}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Сумма *</label>
+              <div className="relative">
+                <input
+                  type="number"
+                  value={newPayment.amount || ''}
+                  onChange={(e) => setNewPayment({ ...newPayment, amount: parseFloat(e.target.value) || 0 })}
+                  className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white transition-all text-sm"
                   required
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₽</span>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Тип платежа *</label>
+              <div className="grid grid-cols-3 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setNewPayment({ ...newPayment, paymentType: 'regular' })}
+                  className={`px-2 py-2 rounded-lg text-xs font-medium transition-all ${
+                    newPayment.paymentType === 'regular'
+                      ? 'bg-sky-600 text-white shadow-sm'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }`}
                 >
-                  <option value="">Выберите пациента</option>
-                  {patients.map(patient => (
-                    <option key={patient.id} value={patient.id}>
-                      {patient.firstName} {patient.lastName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Прием (необязательно)</label>
-                <select
-                  value={newPayment.appointmentId}
-                  onChange={(e) => setNewPayment({ ...newPayment, appointmentId: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white transition-all"
-                  disabled={!newPayment.patientId}
+                  Обычная
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setNewPayment({ ...newPayment, paymentType: 'debt' })}
+                  className={`px-2 py-2 rounded-lg text-xs font-medium transition-all ${
+                    newPayment.paymentType === 'debt'
+                      ? 'bg-sky-600 text-white shadow-sm'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }`}
                 >
-                  <option value="">Без привязки к приему</option>
-                  {appointments
-                    .filter(apt => apt.patientId === newPayment.patientId)
-                    .map(appointment => {
-                      const doctor = patients.find(p => p.id === appointment.doctorId);
-                      return (
-                        <option key={appointment.id} value={appointment.id}>
-                          {new Date(appointment.date).toLocaleDateString('ru-RU')} - {appointment.time}
-                        </option>
-                      );
-                    })}
-                </select>
+                  Долг
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setNewPayment({ ...newPayment, paymentType: 'prepayment' })}
+                  className={`px-2 py-2 rounded-lg text-xs font-medium transition-all ${
+                    newPayment.paymentType === 'prepayment'
+                      ? 'bg-sky-600 text-white shadow-sm'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  Предоплата
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Детали платежа */}
-          <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-            <h4 className="text-sm font-semibold text-gray-900 mb-3">Детали платежа</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Сумма *</label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    value={newPayment.amount || ''}
-                    onChange={(e) => setNewPayment({ ...newPayment, amount: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white transition-all"
-                    required
-                    min="0"
-                    step="0.01"
-                    placeholder="0.00"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">₽</span>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Способ оплаты *</label>
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setNewPayment({ ...newPayment, method: 'cash' })}
+                  className={`px-3 py-2 rounded-lg text-xs font-medium transition-all flex items-center justify-center space-x-1.5 ${
+                    newPayment.method === 'cash'
+                      ? 'bg-sky-600 text-white shadow-sm'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  <DollarSign size={14} />
+                  <span>Наличные</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setNewPayment({ ...newPayment, method: 'card' })}
+                  className={`px-3 py-2 rounded-lg text-xs font-medium transition-all flex items-center justify-center space-x-1.5 ${
+                    newPayment.method === 'card'
+                      ? 'bg-sky-600 text-white shadow-sm'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  <CreditCard size={14} />
+                  <span>Карта</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setNewPayment({ ...newPayment, method: 'insurance' })}
+                  className={`px-3 py-2 rounded-lg text-xs font-medium transition-all flex items-center justify-center space-x-1.5 ${
+                    newPayment.method === 'insurance'
+                      ? 'bg-sky-600 text-white shadow-sm'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  <Receipt size={14} />
+                  <span>Страховка</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setNewPayment({ ...newPayment, method: 'transfer' })}
+                  className={`px-3 py-2 rounded-lg text-xs font-medium transition-all flex items-center justify-center space-x-1.5 ${
+                    newPayment.method === 'transfer'
+                      ? 'bg-sky-600 text-white shadow-sm'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  <CreditCard size={14} />
+                  <span>Перевод</span>
+                </button>
               </div>
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Тип платежа *</label>
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setNewPayment({ ...newPayment, paymentType: 'regular' })}
-                    className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                      newPayment.paymentType === 'regular'
-                        ? 'bg-sky-600 text-white shadow-sm'
-                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    Обычная
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewPayment({ ...newPayment, paymentType: 'debt' })}
-                    className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                      newPayment.paymentType === 'debt'
-                        ? 'bg-sky-600 text-white shadow-sm'
-                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    Долг
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewPayment({ ...newPayment, paymentType: 'prepayment' })}
-                    className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                      newPayment.paymentType === 'prepayment'
-                        ? 'bg-sky-600 text-white shadow-sm'
-                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    Предоплата
-                  </button>
-                </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Статус *</label>
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setNewPayment({ ...newPayment, status: 'pending' })}
+                  className={`px-3 py-2 rounded-lg text-xs font-medium transition-all flex items-center justify-center space-x-1.5 ${
+                    newPayment.status === 'pending'
+                      ? 'bg-sky-600 text-white shadow-sm'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  <Clock size={14} />
+                  <span>Ожидает</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setNewPayment({ ...newPayment, status: 'paid' })}
+                  className={`px-3 py-2 rounded-lg text-xs font-medium transition-all flex items-center justify-center space-x-1.5 ${
+                    newPayment.status === 'paid'
+                      ? 'bg-sky-600 text-white shadow-sm'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  <CheckCircle size={14} />
+                  <span>Оплачено</span>
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Способ и статус оплаты */}
-          <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-            <h4 className="text-sm font-semibold text-gray-900 mb-3">Способ и статус оплаты</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Способ оплаты *</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setNewPayment({ ...newPayment, method: 'cash' })}
-                    className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center space-x-2 ${
-                      newPayment.method === 'cash'
-                        ? 'bg-sky-600 text-white shadow-sm'
-                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    <DollarSign size={16} />
-                    <span>Наличные</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewPayment({ ...newPayment, method: 'card' })}
-                    className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center space-x-2 ${
-                      newPayment.method === 'card'
-                        ? 'bg-sky-600 text-white shadow-sm'
-                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    <CreditCard size={16} />
-                    <span>Карта</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewPayment({ ...newPayment, method: 'insurance' })}
-                    className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center space-x-2 ${
-                      newPayment.method === 'insurance'
-                        ? 'bg-sky-600 text-white shadow-sm'
-                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    <Receipt size={16} />
-                    <span>Страховка</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewPayment({ ...newPayment, method: 'transfer' })}
-                    className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center space-x-2 ${
-                      newPayment.method === 'transfer'
-                        ? 'bg-sky-600 text-white shadow-sm'
-                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    <CreditCard size={16} />
-                    <span>Перевод</span>
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Статус *</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setNewPayment({ ...newPayment, status: 'pending' })}
-                    className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center space-x-2 ${
-                      newPayment.status === 'pending'
-                        ? 'bg-sky-600 text-white shadow-sm'
-                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    <Clock size={16} />
-                    <span>Ожидает</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setNewPayment({ ...newPayment, status: 'paid' })}
-                    className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center space-x-2 ${
-                      newPayment.status === 'paid'
-                        ? 'bg-sky-600 text-white shadow-sm'
-                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    <CheckCircle size={16} />
-                    <span>Оплачено</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Примечания */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Примечания</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Примечания</label>
             <textarea
               value={newPayment.notes}
               onChange={(e) => setNewPayment({ ...newPayment, notes: e.target.value })}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white transition-all resize-none"
-              rows={3}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white transition-all resize-none text-sm"
+              rows={2}
               placeholder="Дополнительная информация о платеже..."
             />
           </div>
 
-          {/* Кнопки действий */}
           <div className="flex space-x-3 pt-2">
             <button
               onClick={handleAddPayment}
-              className="flex-1 bg-sky-600 text-white py-3 px-6 rounded-lg hover:bg-sky-700 transition-all shadow-sm hover:shadow font-medium"
+              className="flex-1 bg-sky-600 text-white py-2.5 px-4 rounded-lg hover:bg-sky-700 transition-all shadow-sm hover:shadow font-medium text-sm"
             >
               Добавить платеж
             </button>
             <button
               onClick={() => setShowAddModal(false)}
-              className="flex-1 bg-white text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-50 transition-all border-2 border-gray-300 font-medium"
+              className="flex-1 bg-white text-gray-700 py-2.5 px-4 rounded-lg hover:bg-gray-50 transition-all border-2 border-gray-300 font-medium text-sm"
             >
               Отмена
             </button>
