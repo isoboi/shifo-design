@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Search, Edit2, Trash2, DollarSign, CreditCard, Calendar, Filter } from 'lucide-react';
+import { Plus, Search, CreditCard as Edit2, Trash2, DollarSign, CreditCard, Calendar, Filter } from 'lucide-react';
 import { Expense } from '../types';
 import { Modal } from './Modal';
 
