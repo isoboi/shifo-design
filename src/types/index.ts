@@ -71,3 +71,15 @@ export interface ScheduleConflict {
   type: 'overlap' | 'outside-hours' | 'unavailable';
   message: string;
 }
+
+export interface Expense {
+  id: string;
+  amount: number;
+  category: 'salary' | 'equipment' | 'supplies' | 'utilities' | 'rent' | 'maintenance' | 'other';
+  description: string;
+  date: string;
+  paymentMethod: 'cash' | 'card' | 'transfer';
+  recipient?: string;
+  notes?: string;
+  createdAt: string;
+}

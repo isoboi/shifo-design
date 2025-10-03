@@ -5,10 +5,11 @@ import { PatientManagement } from './components/PatientManagement';
 import { DoctorManagement } from './components/DoctorManagement';
 import { AppointmentScheduler } from './components/AppointmentScheduler';
 import { PaymentManagement } from './components/PaymentManagement';
+import { ExpenseManagement } from './components/ExpenseManagement';
 import { Analytics } from './components/Analytics';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { mockPatients, mockDoctors, mockAppointments, mockPayments } from './data/mockData';
-import { Patient, Doctor, Appointment, Payment } from './types';
+import { Patient, Doctor, Appointment, Payment, Expense } from './types';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -16,6 +17,7 @@ function App() {
   const [doctors, setDoctors] = useLocalStorage<Doctor[]>('doctors', mockDoctors);
   const [appointments, setAppointments] = useLocalStorage<Appointment[]>('appointments', mockAppointments);
   const [payments, setPayments] = useLocalStorage<Payment[]>('payments', mockPayments);
+  const [expenses, setExpenses] = useLocalStorage<Expense[]>('expenses', []);
 
   const handleAddPatient = (patientData: Omit<Patient, 'id' | 'createdAt'>) => {
     const newPatient: Patient = {
@@ -98,6 +100,23 @@ function App() {
     setPayments([...payments, newPayment]);
   };
 
+  const handleAddExpense = (expenseData: Omit<Expense, 'id' | 'createdAt'>) => {
+    const newExpense: Expense = {
+      ...expenseData,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString()
+    };
+    setExpenses([...expenses, newExpense]);
+  };
+
+  const handleUpdateExpense = (id: string, updates: Partial<Expense>) => {
+    setExpenses(expenses.map(e => e.id === id ? { ...e, ...updates } : e));
+  };
+
+  const handleDeleteExpense = (id: string) => {
+    setExpenses(expenses.filter(e => e.id !== id));
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -146,6 +165,15 @@ function App() {
             patients={patients}
             onUpdatePayment={handleUpdatePayment}
             onAddPayment={handleAddPayment}
+          />
+        );
+      case 'expenses':
+        return (
+          <ExpenseManagement
+            expenses={expenses}
+            onAddExpense={handleAddExpense}
+            onUpdateExpense={handleUpdateExpense}
+            onDeleteExpense={handleDeleteExpense}
           />
         );
       case 'analytics':

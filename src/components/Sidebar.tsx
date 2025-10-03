@@ -1,12 +1,13 @@
 import React from 'react';
-import { 
-  Home, 
-  Users, 
-  UserCheck, 
-  Calendar, 
-  CreditCard, 
+import {
+  Home,
+  Users,
+  UserCheck,
+  Calendar,
+  CreditCard,
   Settings,
-  Activity
+  Activity,
+  TrendingDown
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -20,6 +21,7 @@ const menuItems = [
   { id: 'doctors', label: 'Врачи', icon: UserCheck },
   { id: 'appointments', label: 'Записи', icon: Calendar },
   { id: 'payments', label: 'Платежи', icon: CreditCard },
+  { id: 'expenses', label: 'Траты', icon: TrendingDown },
   { id: 'analytics', label: 'Аналитика', icon: Activity },
   { id: 'settings', label: 'Настройки', icon: Settings },
 ];
