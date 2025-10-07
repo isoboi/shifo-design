@@ -4,8 +4,7 @@ import { Dashboard } from './components/Dashboard';
 import { PatientManagement } from './components/PatientManagement';
 import { DoctorManagement } from './components/DoctorManagement';
 import { AppointmentScheduler } from './components/AppointmentScheduler';
-import { PaymentManagement } from './components/PaymentManagement';
-import { ExpenseManagement } from './components/ExpenseManagement';
+import { FinanceManagement } from './components/FinanceManagement';
 import { Analytics } from './components/Analytics';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { mockPatients, mockDoctors, mockAppointments, mockPayments } from './data/mockData';
@@ -157,20 +156,15 @@ function App() {
             onDeleteAppointment={handleDeleteAppointment}
           />
         );
-      case 'payments':
+      case 'finances':
         return (
-          <PaymentManagement
+          <FinanceManagement
             payments={payments}
+            expenses={expenses}
             appointments={appointments}
             patients={patients}
             onUpdatePayment={handleUpdatePayment}
             onAddPayment={handleAddPayment}
-          />
-        );
-      case 'expenses':
-        return (
-          <ExpenseManagement
-            expenses={expenses}
             onAddExpense={handleAddExpense}
             onUpdateExpense={handleUpdateExpense}
             onDeleteExpense={handleDeleteExpense}

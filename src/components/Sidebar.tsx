@@ -20,8 +20,7 @@ const menuItems = [
   { id: 'patients', label: 'Пациенты', icon: Users },
   { id: 'doctors', label: 'Врачи', icon: UserCheck },
   { id: 'appointments', label: 'Записи', icon: Calendar },
-  { id: 'payments', label: 'Платежи', icon: CreditCard },
-  { id: 'expenses', label: 'Траты', icon: TrendingDown },
+  { id: 'finances', label: 'Финансы', icon: CreditCard },
   { id: 'analytics', label: 'Аналитика', icon: Activity },
   { id: 'settings', label: 'Настройки', icon: Settings },
 ];
