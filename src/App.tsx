@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Landing } from './components/Landing';
 import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './components/Dashboard';
 import { PatientManagement } from './components/PatientManagement';
@@ -11,6 +12,7 @@ import { mockPatients, mockDoctors, mockAppointments, mockPayments } from './dat
 import { Patient, Doctor, Appointment, Payment, Expense } from './types';
 
 function App() {
+  const [showLanding, setShowLanding] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [patients, setPatients] = useLocalStorage<Patient[]>('patients', mockPatients);
   const [doctors, setDoctors] = useLocalStorage<Doctor[]>('doctors', mockDoctors);
@@ -190,6 +192,10 @@ function App() {
         return null;
     }
   };
+
+  if (showLanding) {
+    return <Landing onGetStarted={() => setShowLanding(false)} />;
+  }
 
   return (
     <div className="flex h-screen bg-gray-50">
