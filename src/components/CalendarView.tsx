@@ -279,9 +279,19 @@ export function CalendarView({
                   {
                 timeSlots.map((time, timeIndex) => {
                   const appointmentsInSlot = getAppointmentsForSlot(date, time);
-                  const statusCounts = getStatusCounts(appointmentsInSlot);
-                  const totalCount = statusCounts.scheduled + statusCounts.completed + statusCounts.cancelled;
+                  const totalCount = appointmentsInSlot.length;
                   const isCurrentSlot = isToday(date) && isCurrentTime(time);
+
+                  const getColorClass = (status: string) => {
+                    switch (status) {
+                      case 'completed':
+                        return 'bg-green-500 text-white';
+                      case 'cancelled':
+                        return 'bg-red-500 text-white';
+                      default:
+                        return 'bg-blue-500 text-white';
+                    }
+                  };
 
                   return (
                     <div
@@ -296,26 +306,31 @@ export function CalendarView({
                       )}
 
                       {totalCount > 0 ? (
-                        <div className="flex flex-row items-center justify-center h-full gap-2 px-2 py-2">
-                          {statusCounts.scheduled > 0 && (
-                            <div className="flex items-center space-x-1.5 bg-blue-100 text-blue-700 px-3 py-1 rounded-full">
-                              <Clock size={14} />
-                              <span className="text-sm font-semibold">{statusCounts.scheduled}</span>
+                        totalCount === 1 ? (
+                          <div className={`h-full flex items-center justify-center ${getColorClass(appointmentsInSlot[0].status)}`}>
+                            <div className="text-center px-1">
+                              <div className="font-semibold text-xs truncate">{appointmentsInSlot[0].patientName}</div>
+                              <div className="text-xs opacity-90">{appointmentsInSlot[0].duration} мин</div>
                             </div>
-                          )}
-                          {statusCounts.completed > 0 && (
-                            <div className="flex items-center space-x-1.5 bg-green-100 text-green-700 px-3 py-1 rounded-full">
-                              <CheckCircle size={14} />
-                              <span className="text-sm font-semibold">{statusCounts.completed}</span>
-                            </div>
-                          )}
-                          {statusCounts.cancelled > 0 && (
-                            <div className="flex items-center space-x-1.5 bg-red-100 text-red-700 px-3 py-1 rounded-full">
-                              <XCircle size={14} />
-                              <span className="text-sm font-semibold">{statusCounts.cancelled}</span>
-                            </div>
-                          )}
-                        </div>
+                          </div>
+                        ) : (
+                          <div className="flex flex-wrap gap-0.5 p-0.5 h-full content-start">
+                            {appointmentsInSlot.slice(0, 3).map((apt, idx) => (
+                              <div
+                                key={idx}
+                                className={`${getColorClass(apt.status)} px-2 py-0.5 rounded text-xs font-semibold flex items-center gap-1`}
+                              >
+                                <span className="truncate max-w-[60px]">{apt.patientName}</span>
+                                <span className="text-[10px] opacity-90">{apt.duration}м</span>
+                              </div>
+                            ))}
+                            {totalCount > 3 && (
+                              <div className="bg-gray-600 text-white px-2 py-0.5 rounded text-xs font-semibold">
+                                +{totalCount - 3}
+                              </div>
+                            )}
+                          </div>
+                        )
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                           <Plus size={16} className="text-gray-400" />
