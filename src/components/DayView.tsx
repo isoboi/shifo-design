@@ -42,21 +42,11 @@ export function DayView({
 
   const getAppointmentColor = (status: string) => {
     switch (status) {
-      case 'scheduled': return 'bg-gradient-to-r from-blue-500 to-blue-600 border-l-blue-700 text-white';
-      case 'completed': return 'bg-gradient-to-r from-green-500 to-green-600 border-l-green-700 text-white';
-      case 'cancelled': return 'bg-gradient-to-r from-red-500 to-red-600 border-l-red-700 text-white';
-      case 'no-show': return 'bg-gradient-to-r from-gray-400 to-gray-500 border-l-gray-600 text-white';
-      default: return 'bg-gradient-to-r from-blue-500 to-blue-600 border-l-blue-700 text-white';
-    }
-  };
-
-  const getStatusIndicator = (status: string) => {
-    switch (status) {
-      case 'scheduled': return '●';
-      case 'completed': return '✓';
-      case 'cancelled': return '✕';
-      case 'no-show': return '○';
-      default: return '●';
+      case 'scheduled': return 'bg-blue-50 border-blue-200 text-blue-900';
+      case 'completed': return 'bg-green-50 border-green-200 text-green-900';
+      case 'cancelled': return 'bg-red-50 border-red-200 text-red-900';
+      case 'no-show': return 'bg-gray-50 border-gray-200 text-gray-900';
+      default: return 'bg-blue-50 border-blue-200 text-blue-900';
     }
   };
 
@@ -141,7 +131,7 @@ export function DayView({
                               onAppointmentClick(appointment);
                             }}
                             className={`
-                              absolute left-0 right-0 rounded border-l-2 px-1.5 py-0.5 cursor-pointer
+                              absolute left-0 right-0 rounded border px-1.5 py-0.5 cursor-pointer
                               hover:shadow-md transition-all duration-150 overflow-hidden
                               ${getAppointmentColor(appointment.status)}
                             `}
@@ -153,10 +143,7 @@ export function DayView({
                             }}
                           >
                             <div className="flex items-center justify-between h-full">
-                              <div className="flex-1 min-w-0 flex items-center space-x-1">
-                                <span className="font-bold text-xs">
-                                  {getStatusIndicator(appointment.status)}
-                                </span>
+                              <div className="flex-1 min-w-0">
                                 <span className="truncate font-medium">
                                   {patient?.firstName} {patient?.lastName}
                                 </span>
@@ -194,16 +181,16 @@ export function DayView({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4 text-xs">
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded border-l-2 border-blue-700"></div>
-              <span className="text-gray-600">● Запланировано</span>
+              <div className="w-3 h-3 bg-blue-50 border border-blue-200 rounded"></div>
+              <span className="text-gray-600">Запланировано</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-green-600 rounded border-l-2 border-green-700"></div>
-              <span className="text-gray-600">✓ Завершено</span>
+              <div className="w-3 h-3 bg-green-50 border border-green-200 rounded"></div>
+              <span className="text-gray-600">Завершено</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-gradient-to-r from-red-500 to-red-600 rounded border-l-2 border-red-700"></div>
-              <span className="text-gray-600">✕ Отменено</span>
+              <div className="w-3 h-3 bg-red-50 border border-red-200 rounded"></div>
+              <span className="text-gray-600">Отменено</span>
             </div>
             <div className="text-gray-500 italic">До 4 записей в ячейке</div>
           </div>
