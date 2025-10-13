@@ -42,11 +42,11 @@ export function DayView({
 
   const getAppointmentColor = (status: string) => {
     switch (status) {
-      case 'scheduled': return 'bg-blue-50 border-blue-200 text-blue-900';
-      case 'completed': return 'bg-green-50 border-green-200 text-green-900';
-      case 'cancelled': return 'bg-red-50 border-red-200 text-red-900';
-      case 'no-show': return 'bg-gray-50 border-gray-200 text-gray-900';
-      default: return 'bg-blue-50 border-blue-200 text-blue-900';
+      case 'scheduled': return 'bg-blue-500 text-white';
+      case 'completed': return 'bg-green-500 text-white';
+      case 'cancelled': return 'bg-red-500 text-white';
+      case 'no-show': return 'bg-gray-500 text-white';
+      default: return 'bg-blue-500 text-white';
     }
   };
 
@@ -117,49 +117,52 @@ export function DayView({
                       <div className="absolute top-0 left-0 w-full h-1 bg-red-500 z-10"></div>
                     )}
 
-                    <div className="relative h-full">
-                      {visibleAppointments.map((appointment, aptIndex) => {
-                        const patient = patients.find(p => p.id === appointment.patientId);
-                        const heightPerCard = 18;
-                        const spacing = 1;
-
-                        return (
-                          <div
-                            key={appointment.id}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onAppointmentClick(appointment);
-                            }}
-                            className={`
-                              absolute left-0 right-0 rounded border px-1.5 py-0.5 cursor-pointer
-                              hover:shadow-md transition-all duration-150 overflow-hidden
-                              ${getAppointmentColor(appointment.status)}
-                            `}
-                            style={{
-                              top: `${aptIndex * (heightPerCard + spacing)}px`,
-                              height: `${heightPerCard}px`,
-                              fontSize: '10px',
-                              zIndex: 10 - aptIndex
-                            }}
-                          >
-                            <div className="flex items-center justify-between h-full">
-                              <div className="flex-1 min-w-0">
-                                <span className="truncate font-medium">
-                                  {patient?.firstName} {patient?.lastName}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-
-                      {hasMore && (
+                    <div className="flex flex-col gap-0.5 h-full">
+                      {appointmentsInSlot.length === 1 ? (
                         <div
-                          className="absolute bottom-0 right-0 bg-gray-700 text-white text-xs px-1.5 py-0.5 rounded-tl"
-                          style={{ fontSize: '9px' }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onAppointmentClick(appointmentsInSlot[0]);
+                          }}
+                          className={`h-full w-full flex items-center justify-center rounded cursor-pointer hover:shadow-md transition-all ${getAppointmentColor(appointmentsInSlot[0].status)}`}
                         >
-                          +{appointmentsInSlot.length - maxVisibleAppointments}
+                          <div className="text-center px-2">
+                            <div className="font-semibold text-xs truncate">
+                              {patients.find(p => p.id === appointmentsInSlot[0].patientId)?.firstName} {patients.find(p => p.id === appointmentsInSlot[0].patientId)?.lastName}
+                            </div>
+                            <div className="text-xs opacity-90">{appointmentsInSlot[0].duration} мин</div>
+                          </div>
                         </div>
+                      ) : (
+                        <>
+                          {visibleAppointments.map((appointment, aptIndex) => {
+                            const patient = patients.find(p => p.id === appointment.patientId);
+
+                            return (
+                              <div
+                                key={appointment.id}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onAppointmentClick(appointment);
+                                }}
+                                className={`w-full rounded px-2 py-1 cursor-pointer hover:shadow-md transition-all overflow-hidden ${getAppointmentColor(appointment.status)}`}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <span className="truncate font-semibold text-xs flex-1">
+                                    {patient?.firstName} {patient?.lastName}
+                                  </span>
+                                  <span className="text-[10px] opacity-90 ml-1">{appointment.duration}м</span>
+                                </div>
+                              </div>
+                            );
+                          })}
+
+                          {hasMore && (
+                            <div className="bg-gray-600 text-white w-full px-2 py-1 rounded text-xs font-semibold text-center">
+                              +{appointmentsInSlot.length - maxVisibleAppointments}
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
 
