@@ -69,50 +69,6 @@ export function AppointmentDetailsModal({
 
   return (
     <div className="space-y-6">
-      {/* Action Buttons */}
-      <div className="flex items-center justify-between pb-4 border-b border-gray-200">
-        <div className="flex items-center space-x-2">
-          <button
-            type="button"
-            onClick={onDuplicate}
-            className="flex items-center space-x-2 px-4 py-2 bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors"
-          >
-            <Copy size={16} />
-            <span>Дублировать запись</span>
-          </button>
-          <button
-            type="button"
-            onClick={onEdit}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
-          >
-            <Edit2 size={16} />
-            <span>Редактировать запись</span>
-          </button>
-        </div>
-        <div className="flex items-center space-x-2">
-          {appointment.status === 'scheduled' && (
-            <>
-              <button
-                type="button"
-                onClick={onMarkCompleted}
-                className="flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
-              >
-                <CheckCircle size={16} />
-                <span>Отметить как завершено</span>
-              </button>
-              <button
-                type="button"
-                onClick={onCancel}
-                className="flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
-              >
-                <XCircle size={16} />
-                <span>Отменить запись</span>
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-
       {/* Patient Info */}
       <div className="flex items-center space-x-3">
         <User size={20} className="text-gray-500" />
@@ -227,6 +183,50 @@ export function AppointmentDetailsModal({
           </div>
         </div>
       )}
+
+      {/* Action Buttons */}
+      <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+        <div className="flex items-center space-x-2">
+          <button
+            type="button"
+            onClick={onDuplicate}
+            className="flex items-center space-x-1.5 px-3 py-1.5 text-sm bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors"
+          >
+            <Copy size={14} />
+            <span>Дублировать запись</span>
+          </button>
+          <button
+            type="button"
+            onClick={onEdit}
+            className="flex items-center space-x-1.5 px-3 py-1.5 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
+          >
+            <Edit2 size={14} />
+            <span>Редактировать запись</span>
+          </button>
+        </div>
+        <div className="flex items-center space-x-2">
+          {appointment.status === 'scheduled' && (
+            <>
+              <button
+                type="button"
+                onClick={onMarkCompleted}
+                className="flex items-center space-x-1.5 px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
+              >
+                <CheckCircle size={14} />
+                <span>Отметить как завершено</span>
+              </button>
+              <button
+                type="button"
+                onClick={onCancel}
+                className="flex items-center space-x-1.5 px-3 py-1.5 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+              >
+                <XCircle size={14} />
+                <span>Отменить запись</span>
+              </button>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
