@@ -82,12 +82,15 @@ export const mockDoctors: Doctor[] = [
   }
 ];
 
+const today = new Date();
+const todayStr = today.toISOString().split('T')[0];
+
 export const mockAppointments: Appointment[] = [
   {
     id: '1',
     patientId: '1',
     doctorId: '1',
-    date: '2024-01-25',
+    date: todayStr,
     time: '10:00',
     duration: 30,
     type: 'consultation',
@@ -100,8 +103,8 @@ export const mockAppointments: Appointment[] = [
     id: '2',
     patientId: '2',
     doctorId: '2',
-    date: '2024-01-26',
-    time: '14:30',
+    date: todayStr,
+    time: '10:00',
     duration: 45,
     type: 'follow-up',
     status: 'completed',
@@ -110,6 +113,97 @@ export const mockAppointments: Appointment[] = [
     diagnosis: 'Диабет 2 типа - стабильное течение',
     prescription: 'Метформин 500мг 2 раза в день',
     createdAt: '2024-01-22T09:15:00Z'
+  },
+  {
+    id: '3',
+    patientId: '1',
+    doctorId: '1',
+    date: todayStr,
+    time: '10:00',
+    duration: 30,
+    type: 'consultation',
+    status: 'cancelled',
+    notes: 'Отменено пациентом',
+    symptoms: 'Боль в спине',
+    createdAt: '2024-01-20T12:00:00Z'
+  },
+  {
+    id: '4',
+    patientId: '2',
+    doctorId: '1',
+    date: todayStr,
+    time: '10:00',
+    duration: 30,
+    type: 'consultation',
+    status: 'scheduled',
+    notes: 'Первичная консультация',
+    symptoms: 'Кашель, температура',
+    createdAt: '2024-01-20T12:00:00Z'
+  },
+  {
+    id: '5',
+    patientId: '1',
+    doctorId: '2',
+    date: todayStr,
+    time: '11:00',
+    duration: 30,
+    type: 'consultation',
+    status: 'scheduled',
+    notes: 'Кардиологический осмотр',
+    symptoms: 'Боли в груди',
+    createdAt: '2024-01-20T12:00:00Z'
+  },
+  {
+    id: '6',
+    patientId: '2',
+    doctorId: '2',
+    date: todayStr,
+    time: '11:00',
+    duration: 30,
+    type: 'follow-up',
+    status: 'completed',
+    notes: 'Повторный прием',
+    symptoms: 'Контроль давления',
+    createdAt: '2024-01-20T12:00:00Z'
+  },
+  {
+    id: '7',
+    patientId: '1',
+    doctorId: '3',
+    date: todayStr,
+    time: '14:00',
+    duration: 30,
+    type: 'consultation',
+    status: 'scheduled',
+    notes: 'Неврологический осмотр',
+    symptoms: 'Головокружение',
+    createdAt: '2024-01-20T12:00:00Z'
+  },
+  {
+    id: '8',
+    patientId: '2',
+    doctorId: '3',
+    date: todayStr,
+    time: '14:00',
+    duration: 30,
+    type: 'consultation',
+    status: 'completed',
+    notes: 'Плановый осмотр',
+    symptoms: 'Мигрень',
+    createdAt: '2024-01-20T12:00:00Z'
+  },
+  {
+    id: '9',
+    patientId: '1',
+    doctorId: '3',
+    date: todayStr,
+    time: '14:00',
+    duration: 30,
+    type: 'consultation',
+    status: 'cancelled',
+    notes: 'Отменено',
+    symptoms: 'Онемение',
+    createdAt: '2024-01-20T12:00:00Z'
   }
 ];
 
