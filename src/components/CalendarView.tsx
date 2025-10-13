@@ -309,28 +309,36 @@ export function CalendarView({
 
                       {totalCount > 0 ? (
                         totalCount === 1 ? (
-                          <div className={`h-full w-full flex items-center justify-center ${getColorClass(appointmentsInSlot[0].status)}`}>
-                            <div className="text-center px-2">
-                              <div className="font-semibold text-xs truncate">{appointmentsInSlot[0].patientName}</div>
-                              <div className="text-xs opacity-90">{appointmentsInSlot[0].duration} мин</div>
-                            </div>
+                          <div className={`h-full w-full flex flex-col items-center justify-center ${getColorClass(appointmentsInSlot[0].status)} rounded`}>
+                            <div className="font-semibold text-xs truncate px-1">{appointmentsInSlot[0].patientName}</div>
+                            <div className="text-xs opacity-90">{appointmentsInSlot[0].duration} мин</div>
+                          </div>
+                        ) : totalCount >= 2 && totalCount <= 4 ? (
+                          <div className="flex h-full gap-0.5">
+                            {appointmentsInSlot.map((apt, idx) => (
+                              <div
+                                key={idx}
+                                className={`flex-1 ${getColorClass(apt.status)} rounded flex flex-col items-center justify-center px-0.5`}
+                              >
+                                <div className="font-semibold text-xs truncate w-full text-center">{apt.patientName}</div>
+                                <div className="text-[10px] opacity-90">{apt.duration}м</div>
+                              </div>
+                            ))}
                           </div>
                         ) : (
-                          <div className="flex flex-col gap-0.5 p-0.5 h-full">
+                          <div className="flex h-full gap-0.5">
                             {appointmentsInSlot.slice(0, 3).map((apt, idx) => (
                               <div
                                 key={idx}
-                                className={`${getColorClass(apt.status)} w-full px-2 py-1 rounded text-xs font-semibold flex items-center justify-between`}
+                                className={`flex-1 ${getColorClass(apt.status)} rounded flex flex-col items-center justify-center px-0.5`}
                               >
-                                <span className="truncate flex-1">{apt.patientName}</span>
-                                <span className="text-[10px] opacity-90 ml-1">{apt.duration}м</span>
+                                <div className="font-semibold text-xs truncate w-full text-center">{apt.patientName}</div>
+                                <div className="text-[10px] opacity-90">{apt.duration}м</div>
                               </div>
                             ))}
-                            {totalCount > 3 && (
-                              <div className="bg-gray-600 text-white w-full px-2 py-1 rounded text-xs font-semibold text-center">
-                                +{totalCount - 3}
-                              </div>
-                            )}
+                            <div className="flex-1 bg-blue-500 text-white rounded flex items-center justify-center font-semibold text-sm">
+                              +{totalCount - 3}
+                            </div>
                           </div>
                         )
                       ) : (
