@@ -286,7 +286,7 @@ export function CalendarView({
                   return (
                     <div
                       key={`${dayIndex}-${timeIndex}`}
-                      className={`h-16 border-b border-gray-100 p-1 relative cursor-pointer hover:bg-gray-50 transition-colors ${
+                      className={`h-16 border-b border-gray-100 p-2 relative cursor-pointer hover:bg-gray-50 transition-colors ${
                         isCurrentSlot ? 'bg-red-50' : ''
                       }`}
                       onClick={() => onTimeSlotClick(date.toISOString().split('T')[0], time)}
@@ -296,7 +296,7 @@ export function CalendarView({
                       )}
 
                       {totalCount > 0 ? (
-                        <div className="flex flex-col items-center justify-center h-full space-y-1">
+                        <div className="flex flex-col items-center justify-center h-full space-y-1.5 py-1">
                           {statusCounts.scheduled > 0 && (
                             <div className="flex items-center space-x-1 bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
                               <Clock size={10} />
