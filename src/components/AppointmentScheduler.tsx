@@ -5,6 +5,7 @@ import { Modal } from './Modal';
 import { AppointmentForm } from './AppointmentForm';
 import { CalendarView } from './CalendarView';
 import { AppointmentDuplicationModal } from './AppointmentDuplicationModal';
+import { AppointmentDetailsModal } from './AppointmentDetailsModal';
 
 interface AppointmentSchedulerProps {
   appointments: Appointment[];
@@ -25,6 +26,8 @@ export function AppointmentScheduler({
 }: AppointmentSchedulerProps) {
   const [showModal, setShowModal] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null);
+  const [viewingAppointment, setViewingAppointment] = useState<Appointment | null>(null);
+  const [showDetailsView, setShowDetailsView] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
@@ -70,12 +73,54 @@ export function AppointmentScheduler({
 
   const handleEdit = (appointment: Appointment) => {
     setEditingAppointment(appointment);
+    setViewingAppointment(null);
+    setShowDetailsView(false);
     setShowModal(true);
+  };
+
+  const handleViewAppointment = (appointment: Appointment) => {
+    setViewingAppointment(appointment);
+    setShowDetailsView(true);
+    setShowModal(true);
+  };
+
+  const handleEditFromDetails = () => {
+    if (viewingAppointment) {
+      setEditingAppointment(viewingAppointment);
+      setShowDetailsView(false);
+    }
+  };
+
+  const handleDuplicateFromDetails = () => {
+    if (viewingAppointment) {
+      setSelectedAppointments([viewingAppointment.id]);
+      setShowDuplicationModal(true);
+    }
+  };
+
+  const handleCancelFromDetails = () => {
+    if (viewingAppointment) {
+      onUpdateAppointment(viewingAppointment.id, { status: 'cancelled' });
+      setShowModal(false);
+      setViewingAppointment(null);
+      setShowDetailsView(false);
+    }
+  };
+
+  const handleMarkCompletedFromDetails = () => {
+    if (viewingAppointment) {
+      onUpdateAppointment(viewingAppointment.id, { status: 'completed' });
+      setShowModal(false);
+      setViewingAppointment(null);
+      setShowDetailsView(false);
+    }
   };
 
   const handleCancel = () => {
     setShowModal(false);
     setEditingAppointment(null);
+    setViewingAppointment(null);
+    setShowDetailsView(false);
   };
 
   const handleStatusChange = (appointmentId: string, newStatus: string) => {
@@ -218,23 +263,35 @@ export function AppointmentScheduler({
       <Modal
         isOpen={showModal}
         onClose={handleCancel}
-        title={editingAppointment ? 'Детали записи' : 'Создать новую запись'}
+        title={showDetailsView ? 'Детали записи' : editingAppointment ? 'Редактировать запись' : 'Создать новую запись'}
         size="xl"
       >
-        <AppointmentForm
-          appointment={editingAppointment}
-          patients={patients}
-          doctors={doctors}
-          appointments={appointments}
-          onSubmit={handleFormSubmit}
-          onCancel={handleCancel}
-          onDuplicate={(appointment) => {
-            setSelectedAppointments([appointment.id]);
-            setShowDuplicationModal(true);
-          }}
-          onDelete={onDeleteAppointment}
-          onStatusChange={handleStatusChange}
-        />
+        {showDetailsView && viewingAppointment ? (
+          <AppointmentDetailsModal
+            appointment={viewingAppointment}
+            patient={patients.find(p => p.id === viewingAppointment.patientId)}
+            doctor={doctors.find(d => d.id === viewingAppointment.doctorId)}
+            onEdit={handleEditFromDetails}
+            onDuplicate={handleDuplicateFromDetails}
+            onCancel={handleCancelFromDetails}
+            onMarkCompleted={handleMarkCompletedFromDetails}
+          />
+        ) : (
+          <AppointmentForm
+            appointment={editingAppointment}
+            patients={patients}
+            doctors={doctors}
+            appointments={appointments}
+            onSubmit={handleFormSubmit}
+            onCancel={handleCancel}
+            onDuplicate={(appointment) => {
+              setSelectedAppointments([appointment.id]);
+              setShowDuplicationModal(true);
+            }}
+            onDelete={onDeleteAppointment}
+            onStatusChange={handleStatusChange}
+          />
+        )}
       </Modal>
 
       {/* Модальное окно дублирования */}
@@ -256,7 +313,7 @@ export function AppointmentScheduler({
             appointments={appointments}
             patients={patients}
             doctors={doctors}
-            onAppointmentClick={handleEdit}
+            onAppointmentClick={handleViewAppointment}
             onTimeSlotClick={handleTimeSlotClick}
           />
         </div>

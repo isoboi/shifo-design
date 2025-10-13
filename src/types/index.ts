@@ -45,6 +45,7 @@ export interface Appointment {
   diagnosis?: string;
   prescription?: string;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface Payment {
