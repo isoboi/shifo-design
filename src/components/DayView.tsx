@@ -108,7 +108,7 @@ export function DayView({
                 return (
                   <div
                     key={`${doctor.id}-${time}`}
-                    className={`border-b border-r border-gray-100 last:border-r-0 p-1 relative cursor-pointer hover:bg-gray-50 transition-colors min-h-[80px] ${
+                    className={`border-b border-r border-gray-100 last:border-r-0 p-2 relative cursor-pointer hover:bg-gray-50 transition-colors min-h-[80px] ${
                       isCurrentSlot ? 'bg-red-50' : ''
                     }`}
                     onClick={() => onTimeSlotClick(date.toISOString().split('T')[0], time)}
@@ -117,24 +117,22 @@ export function DayView({
                       <div className="absolute top-0 left-0 w-full h-1 bg-red-500 z-10"></div>
                     )}
 
-                    <div className="flex flex-col gap-0.5 h-full">
-                      {appointmentsInSlot.length === 1 ? (
+                    {appointmentsInSlot.length > 0 ? (
+                      appointmentsInSlot.length === 1 ? (
                         <div
                           onClick={(e) => {
                             e.stopPropagation();
                             onAppointmentClick(appointmentsInSlot[0]);
                           }}
-                          className={`h-full w-full flex items-center justify-center rounded cursor-pointer hover:shadow-md transition-all ${getAppointmentColor(appointmentsInSlot[0].status)}`}
+                          className={`h-full w-full flex flex-col items-center justify-center rounded cursor-pointer hover:shadow-md transition-all ${getAppointmentColor(appointmentsInSlot[0].status)}`}
                         >
-                          <div className="text-center px-2">
-                            <div className="font-semibold text-xs truncate">
-                              {patients.find(p => p.id === appointmentsInSlot[0].patientId)?.firstName} {patients.find(p => p.id === appointmentsInSlot[0].patientId)?.lastName}
-                            </div>
-                            <div className="text-xs opacity-90">{appointmentsInSlot[0].duration} мин</div>
+                          <div className="font-semibold text-xs truncate px-1">
+                            {patients.find(p => p.id === appointmentsInSlot[0].patientId)?.firstName} {patients.find(p => p.id === appointmentsInSlot[0].patientId)?.lastName}
                           </div>
+                          <div className="text-xs opacity-90">{appointmentsInSlot[0].duration} мин</div>
                         </div>
                       ) : (
-                        <>
+                        <div className="flex h-full gap-0.5">
                           {visibleAppointments.map((appointment, aptIndex) => {
                             const patient = patients.find(p => p.id === appointment.patientId);
 
@@ -145,26 +143,18 @@ export function DayView({
                                   e.stopPropagation();
                                   onAppointmentClick(appointment);
                                 }}
-                                className={`w-full rounded px-2 py-1 cursor-pointer hover:shadow-md transition-all overflow-hidden ${getAppointmentColor(appointment.status)}`}
+                                className={`flex-1 rounded cursor-pointer hover:shadow-md transition-all flex flex-col items-center justify-center px-0.5 ${getAppointmentColor(appointment.status)}`}
                               >
-                                <div className="flex items-center justify-between">
-                                  <span className="truncate font-semibold text-xs flex-1">
-                                    {patient?.firstName} {patient?.lastName}
-                                  </span>
-                                  <span className="text-[10px] opacity-90 ml-1">{appointment.duration}м</span>
+                                <div className="font-semibold text-xs truncate w-full text-center">
+                                  {patient?.firstName} {patient?.lastName}
                                 </div>
+                                <div className="text-[10px] opacity-90">{appointment.duration}м</div>
                               </div>
                             );
                           })}
-
-                          {hasMore && (
-                            <div className="bg-gray-600 text-white w-full px-2 py-1 rounded text-xs font-semibold text-center">
-                              +{appointmentsInSlot.length - maxVisibleAppointments}
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </div>
+                        </div>
+                      )
+                    ) : null}
 
                     {visibleAppointments.length === 0 && (
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">

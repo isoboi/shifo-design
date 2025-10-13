@@ -298,7 +298,7 @@ export function CalendarView({
                   return (
                     <div
                       key={`${dayIndex}-${timeIndex}`}
-                      className={`h-16 border-b border-gray-100 relative cursor-pointer hover:bg-gray-50 transition-colors overflow-hidden ${
+                      className={`h-16 border-b border-gray-100 relative cursor-pointer hover:bg-gray-50 transition-colors overflow-hidden p-2 ${
                         isCurrentSlot ? 'bg-red-50' : ''
                       }`}
                       onClick={() => onTimeSlotClick(date.toISOString().split('T')[0], time)}
