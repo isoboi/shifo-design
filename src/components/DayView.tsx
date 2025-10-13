@@ -108,7 +108,7 @@ export function DayView({
                 return (
                   <div
                     key={`${doctor.id}-${time}`}
-                    className={`border-b border-r border-gray-100 last:border-r-0 p-2 relative cursor-pointer hover:bg-gray-50 transition-colors min-h-[80px] ${
+                    className={`border-b border-r border-gray-100 last:border-r-0 p-1 relative cursor-pointer hover:bg-gray-50 transition-colors min-h-[80px] ${
                       isCurrentSlot ? 'bg-red-50' : ''
                     }`}
                     onClick={() => onTimeSlotClick(date.toISOString().split('T')[0], time)}

@@ -298,7 +298,7 @@ export function CalendarView({
                   return (
                     <div
                       key={`${dayIndex}-${timeIndex}`}
-                      className={`h-16 border-b border-gray-100 relative cursor-pointer hover:bg-gray-50 transition-colors overflow-hidden p-2 ${
+                      className={`h-16 border-b border-gray-100 relative cursor-pointer hover:bg-gray-50 transition-colors overflow-hidden p-1 ${
                         isCurrentSlot ? 'bg-red-50' : ''
                       }`}
                       onClick={() => onTimeSlotClick(date.toISOString().split('T')[0], time)}
@@ -310,8 +310,8 @@ export function CalendarView({
                       {totalCount > 0 ? (
                         totalCount === 1 ? (
                           <div className={`h-full w-full flex flex-col items-center justify-center ${getColorClass(appointmentsInSlot[0].status)} rounded`}>
-                            <div className="font-semibold text-xs truncate px-1">{appointmentsInSlot[0].patientName}</div>
-                            <div className="text-xs opacity-90">{appointmentsInSlot[0].duration} мин</div>
+                            <div className="font-semibold text-xs truncate px-1 text-gray-900">{appointmentsInSlot[0].patientName}</div>
+                            <div className="text-xs text-gray-700">{appointmentsInSlot[0].duration} мин</div>
                           </div>
                         ) : totalCount >= 2 && totalCount <= 4 ? (
                           <div className="flex h-full gap-0.5">
@@ -320,8 +320,8 @@ export function CalendarView({
                                 key={idx}
                                 className={`flex-1 ${getColorClass(apt.status)} rounded flex flex-col items-center justify-center px-0.5`}
                               >
-                                <div className="font-semibold text-xs truncate w-full text-center">{apt.patientName}</div>
-                                <div className="text-[10px] opacity-90">{apt.duration}м</div>
+                                <div className="font-semibold text-xs truncate w-full text-center text-gray-900">{apt.patientName}</div>
+                                <div className="text-[10px] text-gray-700">{apt.duration}м</div>
                               </div>
                             ))}
                           </div>
@@ -332,8 +332,8 @@ export function CalendarView({
                                 key={idx}
                                 className={`flex-1 ${getColorClass(apt.status)} rounded flex flex-col items-center justify-center px-0.5`}
                               >
-                                <div className="font-semibold text-xs truncate w-full text-center">{apt.patientName}</div>
-                                <div className="text-[10px] opacity-90">{apt.duration}м</div>
+                                <div className="font-semibold text-xs truncate w-full text-center text-gray-900">{apt.patientName}</div>
+                                <div className="text-[10px] text-gray-700">{apt.duration}м</div>
                               </div>
                             ))}
                             <div className="flex-1 bg-blue-500 text-white rounded flex items-center justify-center font-semibold text-sm">
