@@ -218,7 +218,7 @@ export function AppointmentScheduler({
       <Modal
         isOpen={showModal}
         onClose={handleCancel}
-        title={editingAppointment ? 'Редактировать запись' : 'Создать новую запись'}
+        title={editingAppointment ? 'Детали записи' : 'Создать новую запись'}
         size="xl"
       >
         <AppointmentForm
@@ -228,6 +228,12 @@ export function AppointmentScheduler({
           appointments={appointments}
           onSubmit={handleFormSubmit}
           onCancel={handleCancel}
+          onDuplicate={(appointment) => {
+            setSelectedAppointments([appointment.id]);
+            setShowDuplicationModal(true);
+          }}
+          onDelete={onDeleteAppointment}
+          onStatusChange={handleStatusChange}
         />
       </Modal>
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, User, UserCheck, FileText, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, User, UserCheck, FileText, AlertCircle, Copy, Edit2, XCircle, CheckCircle } from 'lucide-react';
 import { Appointment, Patient, Doctor } from '../types';
 import { SmartScheduler } from '../utils/scheduler';
 import { RecurringAppointmentOption } from './RecurringAppointmentOption';
@@ -12,15 +12,21 @@ interface AppointmentFormProps {
   appointments: Appointment[];
   onSubmit: (data: Omit<Appointment, 'id' | 'createdAt'>) => void;
   onCancel: () => void;
+  onDuplicate?: (appointment: Appointment) => void;
+  onDelete?: (appointmentId: string) => void;
+  onStatusChange?: (appointmentId: string, status: string) => void;
 }
 
-export function AppointmentForm({ 
-  appointment, 
-  patients, 
-  doctors, 
+export function AppointmentForm({
+  appointment,
+  patients,
+  doctors,
   appointments,
-  onSubmit, 
-  onCancel 
+  onSubmit,
+  onCancel,
+  onDuplicate,
+  onDelete,
+  onStatusChange
 }: AppointmentFormProps) {
   const [formData, setFormData] = useState({
     patientId: '',
@@ -162,9 +168,76 @@ export function AppointmentForm({
   };
 
   const isEditing = !!appointment;
+  const [isEditMode, setIsEditMode] = useState(!isEditing);
+
+  const handleDuplicateClick = () => {
+    if (appointment && onDuplicate) {
+      onDuplicate(appointment);
+    }
+  };
+
+  const handleCancelAppointment = () => {
+    if (appointment && onStatusChange) {
+      onStatusChange(appointment.id, 'cancelled');
+      onCancel();
+    }
+  };
+
+  const handleMarkCompleted = () => {
+    if (appointment && onStatusChange) {
+      onStatusChange(appointment.id, 'completed');
+      onCancel();
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Action buttons for viewing appointment */}
+      {isEditing && !isEditMode && (
+        <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+          <div className="flex items-center space-x-2">
+            <button
+              type="button"
+              onClick={handleDuplicateClick}
+              className="flex items-center space-x-2 px-4 py-2 bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors"
+            >
+              <Copy size={16} />
+              <span>Дублировать запись</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsEditMode(true)}
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
+            >
+              <Edit2 size={16} />
+              <span>Редактировать запись</span>
+            </button>
+          </div>
+          <div className="flex items-center space-x-2">
+            {appointment?.status === 'scheduled' && (
+              <>
+                <button
+                  type="button"
+                  onClick={handleMarkCompleted}
+                  className="flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
+                >
+                  <CheckCircle size={16} />
+                  <span>Отметить как завершено</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelAppointment}
+                  className="flex items-center space-x-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                >
+                  <XCircle size={16} />
+                  <span>Отменить запись</span>
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Основная информация */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -176,7 +249,8 @@ export function AppointmentForm({
             required
             value={formData.patientId}
             onChange={(e) => setFormData({ ...formData, patientId: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
+            disabled={isEditing && !isEditMode}
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors disabled:bg-gray-50 disabled:text-gray-600"
           >
             <option value="">Выберите пациента</option>
             {patients.map(patient => (
@@ -196,7 +270,8 @@ export function AppointmentForm({
             required
             value={formData.doctorId}
             onChange={(e) => handleDoctorChange(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
+            disabled={isEditing && !isEditMode}
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors disabled:bg-gray-50 disabled:text-gray-600"
           >
             <option value="">Выберите врача</option>
             {doctors.map(doctor => (
@@ -217,7 +292,8 @@ export function AppointmentForm({
             required
             value={formData.date}
             onChange={(e) => handleDateChange(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
+            disabled={isEditing && !isEditMode}
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors disabled:bg-gray-50 disabled:text-gray-600"
           />
         </div>
 
@@ -231,7 +307,8 @@ export function AppointmentForm({
             required
             value={formData.time}
             onChange={(e) => handleTimeChange(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
+            disabled={isEditing && !isEditMode}
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors disabled:bg-gray-50 disabled:text-gray-600"
           />
         </div>
 
@@ -240,7 +317,8 @@ export function AppointmentForm({
           <select
             value={formData.type}
             onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
+            disabled={isEditing && !isEditMode}
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors disabled:bg-gray-50 disabled:text-gray-600"
           >
             <option value="consultation">Консультация</option>
             <option value="follow-up">Повторный прием</option>
@@ -254,7 +332,8 @@ export function AppointmentForm({
           <select
             value={formData.duration}
             onChange={(e) => setFormData({ ...formData, duration: Number(e.target.value) })}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
+            disabled={isEditing && !isEditMode}
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors disabled:bg-gray-50 disabled:text-gray-600"
           >
             <option value={15}>15 минут</option>
             <option value={30}>30 минут</option>
@@ -269,7 +348,8 @@ export function AppointmentForm({
             <select
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
+              disabled={!isEditMode}
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors disabled:bg-gray-50 disabled:text-gray-600"
             >
               <option value="scheduled">Запланировано</option>
               <option value="completed">Завершено</option>
@@ -327,7 +407,8 @@ export function AppointmentForm({
             value={formData.symptoms}
             onChange={(e) => setFormData({ ...formData, symptoms: e.target.value })}
             rows={3}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
+            disabled={isEditing && !isEditMode}
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors disabled:bg-gray-50 disabled:text-gray-600"
             placeholder="Опишите симптомы пациента..."
           />
         </div>
@@ -340,7 +421,8 @@ export function AppointmentForm({
                 value={formData.diagnosis}
                 onChange={(e) => setFormData({ ...formData, diagnosis: e.target.value })}
                 rows={2}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
+                disabled={!isEditMode}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors disabled:bg-gray-50 disabled:text-gray-600"
                 placeholder="Поставленный диагноз..."
               />
             </div>
@@ -351,7 +433,8 @@ export function AppointmentForm({
                 value={formData.prescription}
                 onChange={(e) => setFormData({ ...formData, prescription: e.target.value })}
                 rows={2}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
+                disabled={!isEditMode}
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors disabled:bg-gray-50 disabled:text-gray-600"
                 placeholder="Назначенные препараты и процедуры..."
               />
             </div>
@@ -364,7 +447,8 @@ export function AppointmentForm({
             value={formData.notes}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
             rows={2}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors"
+            disabled={isEditing && !isEditMode}
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-colors disabled:bg-gray-50 disabled:text-gray-600"
             placeholder="Дополнительные заметки..."
           />
         </div>
@@ -376,23 +460,38 @@ export function AppointmentForm({
       )}
 
       {/* Кнопки действий */}
-      <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-6 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-        >
-          Отмена
-        </button>
-        <button
-          type="submit"
-          disabled={conflicts.length > 0 && !recurringOptions.enabled}
-          className="px-6 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isEditing ? 'Сохранить изменения' : 
-           recurringOptions.enabled ? `Создать ${recurringOptions.count + 1} записей` : 'Создать запись'}
-        </button>
-      </div>
+      {(!isEditing || isEditMode) && (
+        <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-6 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+          >
+            Отмена
+          </button>
+          <button
+            type="submit"
+            disabled={conflicts.length > 0 && !recurringOptions.enabled}
+            className="px-6 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isEditing ? 'Сохранить изменения' :
+             recurringOptions.enabled ? `Создать ${recurringOptions.count + 1} записей` : 'Создать запись'}
+          </button>
+        </div>
+      )}
+
+      {/* Кнопка закрыть в режиме просмотра */}
+      {isEditing && !isEditMode && (
+        <div className="flex justify-end pt-4 border-t border-gray-200">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-6 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+          >
+            Закрыть
+          </button>
+        </div>
+      )}
     </form>
   );
 }
