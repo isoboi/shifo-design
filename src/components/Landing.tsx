@@ -11,7 +11,11 @@ import {
   CheckCircle2,
   Zap,
   Heart,
-  Activity
+  Activity,
+  Mail,
+  Phone,
+  MapPin,
+  Send
 } from 'lucide-react';
 
 interface LandingProps {
@@ -109,9 +113,12 @@ export function Landing({ onGetStarted }: LandingProps) {
                 <span>Начать работу</span>
                 <ChevronRight className="w-5 h-5" />
               </button>
-              <button className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl hover:border-gray-400 transition-colors font-semibold text-lg">
+              <a
+                href="#contact"
+                className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-xl hover:border-gray-400 transition-colors font-semibold text-lg inline-flex items-center justify-center"
+              >
                 Узнать больше
-              </button>
+              </a>
             </div>
           </div>
           <div className="relative">
@@ -236,21 +243,142 @@ export function Landing({ onGetStarted }: LandingProps) {
         </div>
       </section>
 
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-12 text-center shadow-2xl">
-          <h2 className="text-4xl font-bold text-white mb-4">
-            Готовы начать?
+      <section id="contact" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            Свяжитесь с нами
           </h2>
-          <p className="text-blue-100 text-xl mb-8">
-            Попробуйте систему прямо сейчас и убедитесь в ее эффективности
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Остались вопросы? Мы всегда готовы помочь
           </p>
-          <button
-            onClick={onGetStarted}
-            className="bg-white text-blue-600 px-10 py-4 rounded-xl hover:bg-blue-50 transition-colors font-semibold text-lg inline-flex items-center space-x-2 shadow-lg"
-          >
-            <span>Начать работу</span>
-            <ChevronRight className="w-5 h-5" />
-          </button>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-12">
+          <div>
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Отправить сообщение</h3>
+              <form className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Имя
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Ваше имя"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Телефон
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="+998 XX XXX XX XX"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Сообщение
+                  </label>
+                  <textarea
+                    rows={4}
+                    placeholder="Расскажите о вашей клинике и потребностях..."
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center justify-center space-x-2 shadow-lg"
+                >
+                  <span>Отправить сообщение</span>
+                  <Send className="w-5 h-5" />
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Контактная информация</h3>
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 mb-1">Email</div>
+                    <a href="mailto:info@shifo.uz" className="text-blue-600 hover:underline">
+                      info@shifo.uz
+                    </a>
+                    <br />
+                    <a href="mailto:support@shifo.uz" className="text-blue-600 hover:underline">
+                      support@shifo.uz
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 mb-1">Телефон</div>
+                    <a href="tel:+998712345678" className="text-gray-600 hover:text-blue-600">
+                      +998 71 234 56 78
+                    </a>
+                    <br />
+                    <a href="tel:+998901234567" className="text-gray-600 hover:text-blue-600">
+                      +998 90 123 45 67
+                    </a>
+                    <div className="text-sm text-gray-500 mt-1">
+                      Пн-Пт: 9:00 - 18:00
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 mb-1">Адрес</div>
+                    <p className="text-gray-600">
+                      г. Ташкент, Мирабадский район,<br />
+                      ул. Амира Темура, 107
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 text-center shadow-lg">
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Готовы начать?
+              </h3>
+              <p className="text-blue-100 mb-6">
+                Попробуйте систему прямо сейчас
+              </p>
+              <button
+                onClick={onGetStarted}
+                className="bg-white text-blue-600 px-8 py-3 rounded-lg hover:bg-blue-50 transition-colors font-semibold inline-flex items-center space-x-2 shadow-lg"
+              >
+                <span>Начать работу</span>
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
