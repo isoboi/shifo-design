@@ -362,22 +362,6 @@ export function Landing({ onGetStarted }: LandingProps) {
                 </div>
               </div>
             </div>
-
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 text-center shadow-lg">
-              <h3 className="text-2xl font-bold text-white mb-4">
-                Готовы начать?
-              </h3>
-              <p className="text-blue-100 mb-6">
-                Попробуйте систему прямо сейчас
-              </p>
-              <button
-                onClick={onGetStarted}
-                className="bg-white text-blue-600 px-8 py-3 rounded-lg hover:bg-blue-50 transition-colors font-semibold inline-flex items-center space-x-2 shadow-lg"
-              >
-                <span>Начать работу</span>
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
           </div>
         </div>
       </section>
