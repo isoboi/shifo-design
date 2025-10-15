@@ -368,37 +368,15 @@ export function Landing({ onGetStarted }: LandingProps) {
 
       <footer className="bg-gray-900 text-gray-400 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Heart className="w-6 h-6 text-blue-500" />
-                <span className="text-xl font-bold text-white">Shifo</span>
-              </div>
-              <p className="text-sm">
-                Современная система управления медицинской клиникой
-              </p>
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <div className="flex items-center space-x-2">
+              <Heart className="w-6 h-6 text-blue-500" />
+              <span className="text-xl font-bold text-white">Shifo</span>
             </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4">Продукт</h4>
-              <ul className="space-y-2 text-sm">
-                <li>Возможности</li>
-                <li>Безопасность</li>
-                <li>Интеграции</li>
-                <li>Обновления</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4">Поддержка</h4>
-              <ul className="space-y-2 text-sm">
-                <li>Документация</li>
-                <li>Обучение</li>
-                <li>Контакты</li>
-                <li>FAQ</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 pt-8 text-center text-sm">
-            <p>&copy; 2025 Shifo. Все права защищены.</p>
+            <p className="text-sm text-center">
+              Современная система управления медицинской клиникой
+            </p>
+            <p className="text-sm">&copy; 2025 Shifo. Все права защищены.</p>
           </div>
         </div>
       </footer>
