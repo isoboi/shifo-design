@@ -321,13 +321,13 @@ export function CalendarView({
                               <div className="text-[10px] text-gray-700">{appointmentsInSlot[0].duration}м</div>
                             </div>
                             <button
-                              className="flex-1 bg-blue-500 text-white rounded flex items-center justify-center font-semibold hover:bg-blue-600 transition-colors"
+                              className="flex-1 bg-white border-2 border-gray-300 rounded flex items-center justify-center font-semibold hover:bg-gray-50 hover:border-gray-400 transition-colors"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 onTimeSlotClick(date.toISOString().split('T')[0], time);
                               }}
                             >
-                              <Plus size={16} />
+                              <Plus size={16} className="text-gray-400" />
                             </button>
                           </div>
                         ) : totalCount === 2 ? (
@@ -346,13 +346,13 @@ export function CalendarView({
                               </div>
                             ))}
                             <button
-                              className="flex-1 bg-blue-500 text-white rounded flex items-center justify-center font-semibold hover:bg-blue-600 transition-colors"
+                              className="flex-1 bg-white border-2 border-gray-300 rounded flex items-center justify-center font-semibold hover:bg-gray-50 hover:border-gray-400 transition-colors"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 onTimeSlotClick(date.toISOString().split('T')[0], time);
                               }}
                             >
-                              <Plus size={16} />
+                              <Plus size={16} className="text-gray-400" />
                             </button>
                           </div>
                         ) : totalCount >= 3 ? (
@@ -371,13 +371,13 @@ export function CalendarView({
                               </div>
                             ))}
                             <button
-                              className="flex-1 bg-blue-500 text-white rounded flex items-center justify-center font-semibold text-sm hover:bg-blue-600 transition-colors"
+                              className="flex-1 bg-white border-2 border-gray-300 rounded flex items-center justify-center font-semibold text-sm hover:bg-gray-50 hover:border-gray-400 transition-colors"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 onTimeSlotClick(date.toISOString().split('T')[0], time);
                               }}
                             >
-                              {totalCount > 3 ? `+${totalCount - 3}` : <Plus size={16} />}
+                              {totalCount > 3 ? <span className="text-gray-600">+{totalCount - 3}</span> : <Plus size={16} className="text-gray-400" />}
                             </button>
                           </div>
                         ) : null
