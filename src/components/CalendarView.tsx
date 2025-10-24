@@ -309,7 +309,13 @@ export function CalendarView({
 
                       {totalCount > 0 ? (
                         totalCount === 1 ? (
-                          <div className={`h-full w-full flex flex-col items-center justify-center ${getColorClass(appointmentsInSlot[0].status)} rounded`}>
+                          <div
+                            className={`h-full w-full flex flex-col items-center justify-center ${getColorClass(appointmentsInSlot[0].status)} rounded cursor-pointer`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onAppointmentClick(appointmentsInSlot[0]);
+                            }}
+                          >
                             <div className="font-semibold text-xs truncate px-1 text-gray-900">{appointmentsInSlot[0].patientName}</div>
                             <div className="text-xs text-gray-700">{appointmentsInSlot[0].duration} мин</div>
                           </div>
@@ -318,7 +324,11 @@ export function CalendarView({
                             {appointmentsInSlot.map((apt, idx) => (
                               <div
                                 key={idx}
-                                className={`flex-1 ${getColorClass(apt.status)} rounded flex flex-col items-center justify-center px-0.5`}
+                                className={`flex-1 ${getColorClass(apt.status)} rounded flex flex-col items-center justify-center px-0.5 cursor-pointer`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onAppointmentClick(apt);
+                                }}
                               >
                                 <div className="font-semibold text-xs truncate w-full text-center text-gray-900">{apt.patientName}</div>
                                 <div className="text-[10px] text-gray-700">{apt.duration}м</div>
@@ -330,7 +340,11 @@ export function CalendarView({
                             {appointmentsInSlot.slice(0, 3).map((apt, idx) => (
                               <div
                                 key={idx}
-                                className={`flex-1 ${getColorClass(apt.status)} rounded flex flex-col items-center justify-center px-0.5`}
+                                className={`flex-1 ${getColorClass(apt.status)} rounded flex flex-col items-center justify-center px-0.5 cursor-pointer`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onAppointmentClick(apt);
+                                }}
                               >
                                 <div className="font-semibold text-xs truncate w-full text-center text-gray-900">{apt.patientName}</div>
                                 <div className="text-[10px] text-gray-700">{apt.duration}м</div>
