@@ -156,11 +156,9 @@ export function DayView({
                       )
                     ) : null}
 
-                    {visibleAppointments.length === 0 && (
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                        <Plus size={16} className="text-gray-400" />
-                      </div>
-                    )}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity pointer-events-none">
+                      <Plus size={16} className="text-gray-400" />
+                    </div>
                   </div>
                 );
               })}
