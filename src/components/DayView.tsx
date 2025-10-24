@@ -133,13 +133,13 @@ export function DayView({
                             <div className="text-xs opacity-90">{appointmentsInSlot[0].duration} мин</div>
                           </div>
                           <button
-                            className="flex-1 bg-white border-2 border-gray-300 rounded flex items-center justify-center font-semibold hover:bg-gray-50 hover:border-gray-400 transition-colors"
+                            className="flex-1 bg-white border-2 border-blue-200 rounded flex items-center justify-center font-semibold hover:bg-blue-50 hover:border-blue-300 transition-colors"
                             onClick={(e) => {
                               e.stopPropagation();
                               onTimeSlotClick(date.toISOString().split('T')[0], time);
                             }}
                           >
-                            <Plus size={20} className="text-gray-400" />
+                            <Plus size={20} className="text-blue-400" />
                           </button>
                         </div>
                       ) : appointmentsInSlot.length === 2 ? (
@@ -164,13 +164,13 @@ export function DayView({
                             );
                           })}
                           <button
-                            className="flex-1 bg-white border-2 border-gray-300 rounded flex items-center justify-center font-semibold hover:bg-gray-50 hover:border-gray-400 transition-colors"
+                            className="flex-1 bg-white border-2 border-blue-200 rounded flex items-center justify-center font-semibold hover:bg-blue-50 hover:border-blue-300 transition-colors"
                             onClick={(e) => {
                               e.stopPropagation();
                               onTimeSlotClick(date.toISOString().split('T')[0], time);
                             }}
                           >
-                            <Plus size={20} className="text-gray-400" />
+                            <Plus size={20} className="text-blue-400" />
                           </button>
                         </div>
                       ) : appointmentsInSlot.length >= 3 ? (
@@ -195,13 +195,13 @@ export function DayView({
                             );
                           })}
                           <button
-                            className="flex-1 bg-white border-2 border-gray-300 rounded flex items-center justify-center font-semibold text-sm hover:bg-gray-50 hover:border-gray-400 transition-colors"
+                            className="flex-1 bg-white border-2 border-blue-200 rounded flex items-center justify-center font-semibold text-sm hover:bg-blue-50 hover:border-blue-300 transition-colors"
                             onClick={(e) => {
                               e.stopPropagation();
                               onTimeSlotClick(date.toISOString().split('T')[0], time);
                             }}
                           >
-                            {hasMore ? <span className="text-gray-600">+{appointmentsInSlot.length - maxVisibleAppointments}</span> : <Plus size={20} className="text-gray-400" />}
+                            {hasMore ? <span className="text-blue-500">+{appointmentsInSlot.length - maxVisibleAppointments}</span> : <Plus size={20} className="text-blue-400" />}
                           </button>
                         </div>
                       ) : null
