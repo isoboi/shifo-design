@@ -108,9 +108,10 @@ export function DayView({
                 return (
                   <div
                     key={`${doctor.id}-${time}`}
-                    className={`border-b border-r border-gray-100 last:border-r-0 p-1 relative transition-colors min-h-[80px] ${
+                    className={`border-b border-r border-gray-100 last:border-r-0 p-1 relative cursor-pointer hover:bg-gray-50 transition-colors min-h-[80px] ${
                       isCurrentSlot ? 'bg-red-50' : ''
                     }`}
+                    onClick={() => onTimeSlotClick(date.toISOString().split('T')[0], time)}
                   >
                     {isCurrentSlot && (
                       <div className="absolute top-0 left-0 w-full h-1 bg-red-500 z-10"></div>
@@ -118,24 +119,41 @@ export function DayView({
 
                     {appointmentsInSlot.length > 0 ? (
                       appointmentsInSlot.length === 1 ? (
-                        <div
-                          onClick={() => onAppointmentClick(appointmentsInSlot[0])}
-                          className={`h-full w-full flex flex-col items-center justify-center rounded cursor-pointer hover:shadow-md transition-all ${getAppointmentColor(appointmentsInSlot[0].status)}`}
-                        >
-                          <div className="font-semibold text-xs truncate px-1">
-                            {patients.find(p => p.id === appointmentsInSlot[0].patientId)?.firstName} {patients.find(p => p.id === appointmentsInSlot[0].patientId)?.lastName}
-                          </div>
-                          <div className="text-xs opacity-90">{appointmentsInSlot[0].duration} мин</div>
-                        </div>
-                      ) : (
                         <div className="flex h-full gap-0.5">
-                          {visibleAppointments.map((appointment, aptIndex) => {
+                          <div
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onAppointmentClick(appointmentsInSlot[0]);
+                            }}
+                            className={`flex-1 flex flex-col items-center justify-center rounded cursor-pointer hover:shadow-md transition-all ${getAppointmentColor(appointmentsInSlot[0].status)}`}
+                          >
+                            <div className="font-semibold text-xs truncate px-1">
+                              {patients.find(p => p.id === appointmentsInSlot[0].patientId)?.firstName} {patients.find(p => p.id === appointmentsInSlot[0].patientId)?.lastName}
+                            </div>
+                            <div className="text-xs opacity-90">{appointmentsInSlot[0].duration} мин</div>
+                          </div>
+                          <button
+                            className="flex-1 bg-blue-500 text-white rounded flex items-center justify-center font-semibold hover:bg-blue-600 transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onTimeSlotClick(date.toISOString().split('T')[0], time);
+                            }}
+                          >
+                            <Plus size={20} />
+                          </button>
+                        </div>
+                      ) : appointmentsInSlot.length === 2 ? (
+                        <div className="flex h-full gap-0.5">
+                          {appointmentsInSlot.map((appointment) => {
                             const patient = patients.find(p => p.id === appointment.patientId);
 
                             return (
                               <div
                                 key={appointment.id}
-                                onClick={() => onAppointmentClick(appointment)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onAppointmentClick(appointment);
+                                }}
                                 className={`flex-1 rounded cursor-pointer hover:shadow-md transition-all flex flex-col items-center justify-center px-0.5 ${getAppointmentColor(appointment.status)}`}
                               >
                                 <div className="font-semibold text-xs truncate w-full text-center">
@@ -145,19 +163,53 @@ export function DayView({
                               </div>
                             );
                           })}
+                          <button
+                            className="flex-1 bg-blue-500 text-white rounded flex items-center justify-center font-semibold hover:bg-blue-600 transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onTimeSlotClick(date.toISOString().split('T')[0], time);
+                            }}
+                          >
+                            <Plus size={20} />
+                          </button>
                         </div>
-                      )
-                    ) : null}
+                      ) : appointmentsInSlot.length >= 3 ? (
+                        <div className="flex h-full gap-0.5">
+                          {visibleAppointments.map((appointment) => {
+                            const patient = patients.find(p => p.id === appointment.patientId);
 
-                    <button
-                      onClick={() => onTimeSlotClick(date.toISOString().split('T')[0], time)}
-                      className="absolute top-1 right-1 p-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors shadow-sm opacity-0 hover:opacity-100 z-20"
-                      style={{ opacity: 0 }}
-                      onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-                      onMouseLeave={(e) => e.currentTarget.style.opacity = '0'}
-                    >
-                      <Plus size={14} />
-                    </button>
+                            return (
+                              <div
+                                key={appointment.id}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onAppointmentClick(appointment);
+                                }}
+                                className={`flex-1 rounded cursor-pointer hover:shadow-md transition-all flex flex-col items-center justify-center px-0.5 ${getAppointmentColor(appointment.status)}`}
+                              >
+                                <div className="font-semibold text-xs truncate w-full text-center">
+                                  {patient?.firstName} {patient?.lastName}
+                                </div>
+                                <div className="text-[10px] opacity-90">{appointment.duration}м</div>
+                              </div>
+                            );
+                          })}
+                          <button
+                            className="flex-1 bg-blue-500 text-white rounded flex items-center justify-center font-semibold text-sm hover:bg-blue-600 transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onTimeSlotClick(date.toISOString().split('T')[0], time);
+                            }}
+                          >
+                            {hasMore ? `+${appointmentsInSlot.length - maxVisibleAppointments}` : <Plus size={20} />}
+                          </button>
+                        </div>
+                      ) : null
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                        <Plus size={20} className="text-gray-400" />
+                      </div>
+                    )}
                   </div>
                 );
               })}
