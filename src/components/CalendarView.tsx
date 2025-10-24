@@ -298,10 +298,9 @@ export function CalendarView({
                   return (
                     <div
                       key={`${dayIndex}-${timeIndex}`}
-                      className={`h-16 border-b border-gray-100 relative cursor-pointer hover:bg-gray-50 transition-colors overflow-hidden p-1 ${
+                      className={`h-16 border-b border-gray-100 relative transition-colors overflow-hidden p-1 ${
                         isCurrentSlot ? 'bg-red-50' : ''
                       }`}
-                      onClick={() => onTimeSlotClick(date.toISOString().split('T')[0], time)}
                     >
                       {isCurrentSlot && (
                         <div className="absolute top-0 left-0 w-full h-0.5 bg-red-500 z-10"></div>
@@ -310,11 +309,8 @@ export function CalendarView({
                       {totalCount > 0 ? (
                         totalCount === 1 ? (
                           <div
-                            className={`h-full w-full flex flex-col items-center justify-center ${getColorClass(appointmentsInSlot[0].status)} rounded cursor-pointer`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onAppointmentClick(appointmentsInSlot[0]);
-                            }}
+                            className={`h-full w-full flex flex-col items-center justify-center ${getColorClass(appointmentsInSlot[0].status)} rounded cursor-pointer hover:shadow-md transition-shadow`}
+                            onClick={() => onAppointmentClick(appointmentsInSlot[0])}
                           >
                             <div className="font-semibold text-xs truncate px-1 text-gray-900">{appointmentsInSlot[0].patientName}</div>
                             <div className="text-xs text-gray-700">{appointmentsInSlot[0].duration} мин</div>
@@ -324,11 +320,8 @@ export function CalendarView({
                             {appointmentsInSlot.map((apt, idx) => (
                               <div
                                 key={idx}
-                                className={`flex-1 ${getColorClass(apt.status)} rounded flex flex-col items-center justify-center px-0.5 cursor-pointer`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onAppointmentClick(apt);
-                                }}
+                                className={`flex-1 ${getColorClass(apt.status)} rounded flex flex-col items-center justify-center px-0.5 cursor-pointer hover:shadow-md transition-shadow`}
+                                onClick={() => onAppointmentClick(apt)}
                               >
                                 <div className="font-semibold text-xs truncate w-full text-center text-gray-900">{apt.patientName}</div>
                                 <div className="text-[10px] text-gray-700">{apt.duration}м</div>
@@ -340,11 +333,8 @@ export function CalendarView({
                             {appointmentsInSlot.slice(0, 3).map((apt, idx) => (
                               <div
                                 key={idx}
-                                className={`flex-1 ${getColorClass(apt.status)} rounded flex flex-col items-center justify-center px-0.5 cursor-pointer`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onAppointmentClick(apt);
-                                }}
+                                className={`flex-1 ${getColorClass(apt.status)} rounded flex flex-col items-center justify-center px-0.5 cursor-pointer hover:shadow-md transition-shadow`}
+                                onClick={() => onAppointmentClick(apt)}
                               >
                                 <div className="font-semibold text-xs truncate w-full text-center text-gray-900">{apt.patientName}</div>
                                 <div className="text-[10px] text-gray-700">{apt.duration}м</div>
@@ -357,9 +347,15 @@ export function CalendarView({
                         )
                       ) : null}
 
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity pointer-events-none">
-                        <Plus size={16} className="text-gray-400" />
-                      </div>
+                      <button
+                        onClick={() => onTimeSlotClick(date.toISOString().split('T')[0], time)}
+                        className="absolute top-1 right-1 p-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors shadow-sm opacity-0 hover:opacity-100 group-hover:opacity-100 z-20"
+                        style={{ opacity: 0 }}
+                        onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                        onMouseLeave={(e) => e.currentTarget.style.opacity = '0'}
+                      >
+                        <Plus size={14} />
+                      </button>
                     </div>
                   );
                 })}
