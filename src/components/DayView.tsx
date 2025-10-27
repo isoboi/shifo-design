@@ -118,27 +118,93 @@ export function DayView({
                     )}
 
                     {appointmentsInSlot.length > 0 ? (
-                      <div className="flex flex-col h-full gap-0.5 overflow-y-auto">
-                        {appointmentsInSlot.map((appointment) => {
-                          const patient = patients.find(p => p.id === appointment.patientId);
-
-                          return (
-                            <div
-                              key={appointment.id}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onAppointmentClick(appointment);
-                              }}
-                              className={`${getAppointmentColor(appointment.status)} rounded flex items-center justify-between px-2 py-1.5 cursor-pointer hover:shadow-md transition-all min-h-[32px]`}
-                            >
-                              <div className="font-semibold text-sm truncate flex-1">
-                                {patient?.firstName} {patient?.lastName}
-                              </div>
-                              <div className="text-xs opacity-90 ml-2">{appointment.duration}м</div>
+                      appointmentsInSlot.length === 1 ? (
+                        <div className="flex h-full gap-0.5">
+                          <div
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onAppointmentClick(appointmentsInSlot[0]);
+                            }}
+                            className={`flex-1 flex flex-col items-center justify-center rounded cursor-pointer hover:shadow-md transition-all ${getAppointmentColor(appointmentsInSlot[0].status)}`}
+                          >
+                            <div className="font-semibold text-xs truncate px-1">
+                              {patients.find(p => p.id === appointmentsInSlot[0].patientId)?.firstName} {patients.find(p => p.id === appointmentsInSlot[0].patientId)?.lastName}
                             </div>
-                          );
-                        })}
-                      </div>
+                            <div className="text-xs opacity-90">{appointmentsInSlot[0].duration} мин</div>
+                          </div>
+                          <button
+                            className="flex-1 bg-white border-2 border-blue-200 rounded flex items-center justify-center font-semibold hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onTimeSlotClick(date.toISOString().split('T')[0], time);
+                            }}
+                          >
+                            <Plus size={20} className="text-blue-400" />
+                          </button>
+                        </div>
+                      ) : appointmentsInSlot.length === 2 ? (
+                        <div className="flex h-full gap-0.5">
+                          {appointmentsInSlot.map((appointment) => {
+                            const patient = patients.find(p => p.id === appointment.patientId);
+
+                            return (
+                              <div
+                                key={appointment.id}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onAppointmentClick(appointment);
+                                }}
+                                className={`flex-1 rounded cursor-pointer hover:shadow-md transition-all flex flex-col items-center justify-center px-0.5 ${getAppointmentColor(appointment.status)}`}
+                              >
+                                <div className="font-semibold text-xs truncate w-full text-center">
+                                  {patient?.firstName} {patient?.lastName}
+                                </div>
+                                <div className="text-[10px] opacity-90">{appointment.duration}м</div>
+                              </div>
+                            );
+                          })}
+                          <button
+                            className="flex-1 bg-white border-2 border-blue-200 rounded flex items-center justify-center font-semibold hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onTimeSlotClick(date.toISOString().split('T')[0], time);
+                            }}
+                          >
+                            <Plus size={20} className="text-blue-400" />
+                          </button>
+                        </div>
+                      ) : appointmentsInSlot.length >= 3 ? (
+                        <div className="flex h-full gap-0.5">
+                          {appointmentsInSlot.slice(0, 3).map((appointment) => {
+                            const patient = patients.find(p => p.id === appointment.patientId);
+
+                            return (
+                              <div
+                                key={appointment.id}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onAppointmentClick(appointment);
+                                }}
+                                className={`flex-1 rounded cursor-pointer hover:shadow-md transition-all flex flex-col items-center justify-center px-0.5 ${getAppointmentColor(appointment.status)}`}
+                              >
+                                <div className="font-semibold text-xs truncate w-full text-center">
+                                  {patient?.firstName} {patient?.lastName}
+                                </div>
+                                <div className="text-[10px] opacity-90">{appointment.duration}м</div>
+                              </div>
+                            );
+                          })}
+                          <button
+                            className="flex-1 bg-white border-2 border-blue-200 rounded flex items-center justify-center font-semibold text-sm hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onTimeSlotClick(date.toISOString().split('T')[0], time);
+                            }}
+                          >
+                            {appointmentsInSlot.length > 3 ? <span className="text-blue-500">+{appointmentsInSlot.length - 3}</span> : <Plus size={20} className="text-blue-400" />}
+                          </button>
+                        </div>
+                      ) : null
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                         <Plus size={20} className="text-gray-400" />
