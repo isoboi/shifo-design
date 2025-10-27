@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, Plus, Search, Edit, Trash2, CheckCircle, XCircle, Grid, List, Copy } from 'lucide-react';
 import { Appointment, Patient, Doctor } from '../types';
 import { Modal } from './Modal';
@@ -6,6 +6,7 @@ import { AppointmentForm } from './AppointmentForm';
 import { CalendarView } from './CalendarView';
 import { AppointmentDuplicationModal } from './AppointmentDuplicationModal';
 import { AppointmentDetailsModal } from './AppointmentDetailsModal';
+import { SkeletonLoader } from './SkeletonLoader';
 
 interface AppointmentSchedulerProps {
   appointments: Appointment[];
@@ -33,6 +34,15 @@ export function AppointmentScheduler({
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
   const [selectedAppointments, setSelectedAppointments] = useState<string[]>([]);
   const [showDuplicationModal, setShowDuplicationModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleTimeSlotClick = (date: string, time: string) => {
     setEditingAppointment(null);
@@ -180,6 +190,10 @@ export function AppointmentScheduler({
       default: return <Clock size={16} className="text-gray-600" />;
     }
   };
+
+  if (isLoading) {
+    return <SkeletonLoader />;
+  }
 
   return (
     <div className="space-y-6">
