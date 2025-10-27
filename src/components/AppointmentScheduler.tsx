@@ -192,7 +192,11 @@ export function AppointmentScheduler({
   };
 
   if (isLoading) {
-    return <SkeletonLoader />;
+    return (
+      <div className="h-full">
+        <SkeletonLoader />
+      </div>
+    );
   }
 
   return (
