@@ -2,7 +2,7 @@ import React from 'react';
 
 export function SkeletonLoader() {
   return (
-    <div className="space-y-6 animate-pulse">
+    <div className="flex flex-col h-full space-y-6 animate-pulse">
       <div className="flex justify-between items-center">
         <div className="h-9 bg-gray-200 rounded-lg w-64"></div>
         <div className="flex items-center space-x-3">
@@ -18,8 +18,8 @@ export function SkeletonLoader() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex-1 flex flex-col">
+        <div className="overflow-x-auto flex-1">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
