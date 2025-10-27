@@ -200,8 +200,8 @@ function App() {
   return (
     <div className="flex h-screen bg-gray-50">
       <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
-      <main className="flex-1 overflow-y-auto">
-        <div className="p-6">
+      <main className="flex-1 overflow-y-auto flex flex-col">
+        <div className="p-6 flex-1 flex flex-col">
           {renderContent()}
         </div>
       </main>
