@@ -308,79 +308,21 @@ export function CalendarView({
                       )}
 
                       {totalCount > 0 ? (
-                        totalCount === 1 ? (
-                          <div className="flex h-full gap-0.5">
+                        <div className="flex flex-col h-full gap-0.5 overflow-y-auto">
+                          {appointmentsInSlot.map((apt, idx) => (
                             <div
-                              className={`flex-1 ${getColorClass(appointmentsInSlot[0].status)} rounded flex flex-col items-center justify-center px-0.5 cursor-pointer hover:shadow-md transition-shadow`}
+                              key={idx}
+                              className={`${getColorClass(apt.status)} rounded flex items-center justify-between px-2 py-1 cursor-pointer hover:shadow-md transition-shadow min-h-[28px]`}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                onAppointmentClick(appointmentsInSlot[0]);
+                                onAppointmentClick(apt);
                               }}
                             >
-                              <div className="font-semibold text-xs truncate w-full text-center text-gray-900">{appointmentsInSlot[0].patientName}</div>
-                              <div className="text-[10px] text-gray-700">{appointmentsInSlot[0].duration}м</div>
+                              <div className="font-semibold text-xs truncate text-gray-900 flex-1">{apt.patientName}</div>
+                              <div className="text-[10px] text-gray-700 ml-1">{apt.duration}м</div>
                             </div>
-                            <button
-                              className="flex-1 bg-white border-2 border-blue-200 rounded flex items-center justify-center font-semibold hover:bg-blue-50 hover:border-blue-300 transition-colors"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onTimeSlotClick(date.toISOString().split('T')[0], time);
-                              }}
-                            >
-                              <Plus size={16} className="text-blue-400" />
-                            </button>
-                          </div>
-                        ) : totalCount === 2 ? (
-                          <div className="flex h-full gap-0.5">
-                            {appointmentsInSlot.map((apt, idx) => (
-                              <div
-                                key={idx}
-                                className={`flex-1 ${getColorClass(apt.status)} rounded flex flex-col items-center justify-center px-0.5 cursor-pointer hover:shadow-md transition-shadow`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onAppointmentClick(apt);
-                                }}
-                              >
-                                <div className="font-semibold text-xs truncate w-full text-center text-gray-900">{apt.patientName}</div>
-                                <div className="text-[10px] text-gray-700">{apt.duration}м</div>
-                              </div>
-                            ))}
-                            <button
-                              className="flex-1 bg-white border-2 border-blue-200 rounded flex items-center justify-center font-semibold hover:bg-blue-50 hover:border-blue-300 transition-colors"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onTimeSlotClick(date.toISOString().split('T')[0], time);
-                              }}
-                            >
-                              <Plus size={16} className="text-blue-400" />
-                            </button>
-                          </div>
-                        ) : totalCount >= 3 ? (
-                          <div className="flex h-full gap-0.5">
-                            {appointmentsInSlot.slice(0, 3).map((apt, idx) => (
-                              <div
-                                key={idx}
-                                className={`flex-1 ${getColorClass(apt.status)} rounded flex flex-col items-center justify-center px-0.5 cursor-pointer hover:shadow-md transition-shadow`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onAppointmentClick(apt);
-                                }}
-                              >
-                                <div className="font-semibold text-xs truncate w-full text-center text-gray-900">{apt.patientName}</div>
-                                <div className="text-[10px] text-gray-700">{apt.duration}м</div>
-                              </div>
-                            ))}
-                            <button
-                              className="flex-1 bg-white border-2 border-blue-200 rounded flex items-center justify-center font-semibold text-sm hover:bg-blue-50 hover:border-blue-300 transition-colors"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                onTimeSlotClick(date.toISOString().split('T')[0], time);
-                              }}
-                            >
-                              {totalCount > 3 ? <span className="text-blue-500">+{totalCount - 3}</span> : <Plus size={16} className="text-blue-400" />}
-                            </button>
-                          </div>
-                        ) : null
+                          ))}
+                        </div>
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                           <Plus size={16} className="text-gray-400" />
