@@ -27,7 +27,7 @@ export function SkeletonLoader() {
                   <div className="h-4 bg-gray-200 rounded w-4"></div>
                 </th>
                 <th className="px-6 py-4">
-                  <div className="h-4 bg-gray-200 rounded w-36"></div>
+                  <div className="h-4 bg-gray-200 rounded w-24"></div>
                 </th>
                 <th className="px-6 py-4">
                   <div className="h-4 bg-gray-200 rounded w-24"></div>
@@ -53,7 +53,7 @@ export function SkeletonLoader() {
                     <div className="h-4 bg-gray-200 rounded w-4"></div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="h-4 bg-gray-200 rounded w-36"></div>
+                    <div className="h-4 bg-gray-200 rounded w-24"></div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="h-4 bg-gray-200 rounded w-24"></div>
