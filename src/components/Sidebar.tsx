@@ -7,7 +7,8 @@ import {
   CreditCard,
   Settings,
   Activity,
-  TrendingDown
+  TrendingDown,
+  Languages
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -62,29 +63,33 @@ export function Sidebar({ activeTab, onTabChange, language, onLanguageChange }: 
       </nav>
 
       <div className="p-4 border-t border-gray-200 space-y-4">
-        <div className="flex items-center justify-center space-x-2">
-          <button
-            onClick={() => onLanguageChange('ru')}
-            className={`flex items-center justify-center w-12 h-10 rounded-lg text-lg transition-all ${
-              language === 'ru'
-                ? 'bg-sky-500 shadow-md'
-                : 'bg-gray-100 hover:bg-gray-200'
-            }`}
-            title="Русский"
-          >
-            🇷🇺
-          </button>
-          <button
-            onClick={() => onLanguageChange('en')}
-            className={`flex items-center justify-center w-12 h-10 rounded-lg text-lg transition-all ${
-              language === 'en'
-                ? 'bg-sky-500 shadow-md'
-                : 'bg-gray-100 hover:bg-gray-200'
-            }`}
-            title="English"
-          >
-            🇬🇧
-          </button>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Languages className="text-gray-600" size={18} />
+            <span className="text-sm font-medium text-gray-700">Язык</span>
+          </div>
+          <div className="flex space-x-1">
+            <button
+              onClick={() => onLanguageChange('ru')}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                language === 'ru'
+                  ? 'bg-sky-500 text-white shadow-sm'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              RU
+            </button>
+            <button
+              onClick={() => onLanguageChange('en')}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                language === 'en'
+                  ? 'bg-sky-500 text-white shadow-sm'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              EN
+            </button>
+          </div>
         </div>
 
         <div className="flex items-center space-x-3">
