@@ -14,6 +14,7 @@ import { Patient, Doctor, Appointment, Payment, Expense } from './types';
 function App() {
   const [showLanding, setShowLanding] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [language, setLanguage] = useLocalStorage<'ru' | 'en'>('language', 'ru');
   const [patients, setPatients] = useLocalStorage<Patient[]>('patients', mockPatients);
   const [doctors, setDoctors] = useLocalStorage<Doctor[]>('doctors', mockDoctors);
   const [appointments, setAppointments] = useLocalStorage<Appointment[]>('appointments', mockAppointments);
@@ -199,7 +200,12 @@ function App() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
+      <Sidebar
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        language={language}
+        onLanguageChange={setLanguage}
+      />
       <main className="flex-1 overflow-y-auto flex flex-col">
         <div className="p-6 flex-1 flex flex-col">
           {renderContent()}
