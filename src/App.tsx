@@ -7,6 +7,7 @@ import { DoctorManagement } from './components/DoctorManagement';
 import { AppointmentScheduler } from './components/AppointmentScheduler';
 import { FinanceManagement } from './components/FinanceManagement';
 import { Analytics } from './components/Analytics';
+import { Languages } from 'lucide-react';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { mockPatients, mockDoctors, mockAppointments, mockPayments } from './data/mockData';
 import { Patient, Doctor, Appointment, Payment, Expense } from './types';
@@ -185,8 +186,39 @@ function App() {
       case 'settings':
         return (
           <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Настройки</h2>
-            <p className="text-gray-600">Раздел настроек в разработке...</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Настройки</h2>
+
+            <div className="space-y-6">
+              <div className="border-b border-gray-200 pb-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <Languages className="text-sky-500" size={24} />
+                  <h3 className="text-lg font-semibold text-gray-800">Язык системы</h3>
+                </div>
+                <p className="text-gray-600 mb-4 text-sm">Выберите язык интерфейса приложения</p>
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => setLanguage('ru')}
+                    className={`flex-1 py-4 px-6 rounded-lg font-medium transition-all ${
+                      language === 'ru'
+                        ? 'bg-sky-500 text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    Русский
+                  </button>
+                  <button
+                    onClick={() => setLanguage('en')}
+                    className={`flex-1 py-4 px-6 rounded-lg font-medium transition-all ${
+                      language === 'en'
+                        ? 'bg-sky-500 text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    English
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         );
       default:
