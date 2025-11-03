@@ -13,6 +13,8 @@ import {
 interface SidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
+  language: string;
+  onLanguageChange: (lang: string) => void;
 }
 
 const menuItems = [
@@ -25,7 +27,7 @@ const menuItems = [
   { id: 'settings', label: 'Настройки', icon: Settings },
 ];
 
-export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange, language, onLanguageChange }: SidebarProps) {
   return (
     <div className="bg-white h-screen w-64 shadow-lg flex flex-col">
       <div className="p-6 border-b border-gray-200">
@@ -59,7 +61,32 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
         })}
       </nav>
 
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 border-t border-gray-200 space-y-4">
+        <div className="flex items-center justify-center space-x-2">
+          <button
+            onClick={() => onLanguageChange('ru')}
+            className={`flex items-center justify-center w-12 h-10 rounded-lg text-lg transition-all ${
+              language === 'ru'
+                ? 'bg-sky-500 shadow-md'
+                : 'bg-gray-100 hover:bg-gray-200'
+            }`}
+            title="Русский"
+          >
+            🇷🇺
+          </button>
+          <button
+            onClick={() => onLanguageChange('en')}
+            className={`flex items-center justify-center w-12 h-10 rounded-lg text-lg transition-all ${
+              language === 'en'
+                ? 'bg-sky-500 shadow-md'
+                : 'bg-gray-100 hover:bg-gray-200'
+            }`}
+            title="English"
+          >
+            🇬🇧
+          </button>
+        </div>
+
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-r from-sky-400 to-blue-500 rounded-full flex items-center justify-center">
             <span className="text-white font-semibold text-sm">АД</span>
