@@ -7,15 +7,12 @@ import {
   CreditCard,
   Settings,
   Activity,
-  TrendingDown,
-  Languages
+  TrendingDown
 } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
-  language?: 'ru' | 'en';
-  onLanguageChange?: (lang: 'ru' | 'en') => void;
 }
 
 const menuItems = [
@@ -28,7 +25,7 @@ const menuItems = [
   { id: 'settings', label: 'Настройки', icon: Settings },
 ];
 
-export function Sidebar({ activeTab, onTabChange, language = 'ru', onLanguageChange }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   return (
     <div className="bg-white h-screen w-64 shadow-lg flex flex-col">
       <div className="p-6 border-b border-gray-200">
@@ -61,39 +58,6 @@ export function Sidebar({ activeTab, onTabChange, language = 'ru', onLanguageCha
           );
         })}
       </nav>
-
-      {onLanguageChange && (
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
-            <div className="flex items-center space-x-2 text-gray-600">
-              <Languages size={18} />
-              <span className="text-sm font-medium">Language</span>
-            </div>
-            <div className="flex bg-white rounded-md shadow-sm">
-              <button
-                onClick={() => onLanguageChange('ru')}
-                className={`px-3 py-1.5 text-xs font-medium rounded-l-md transition-colors ${
-                  language === 'ru'
-                    ? 'bg-sky-500 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                RU
-              </button>
-              <button
-                onClick={() => onLanguageChange('en')}
-                className={`px-3 py-1.5 text-xs font-medium rounded-r-md transition-colors ${
-                  language === 'en'
-                    ? 'bg-sky-500 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                EN
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="p-4 border-t border-gray-200">
         <div className="flex items-center space-x-3">
