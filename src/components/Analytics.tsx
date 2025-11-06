@@ -179,13 +179,13 @@ export function Analytics({ patients, doctors, appointments, payments }: Analyti
   const percentageChanges = getPercentageChange();
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Аналитика</h1>
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Аналитика</h1>
         <select
           value={selectedPeriod}
           onChange={(e) => setSelectedPeriod(e.target.value)}
-          className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+          className="px-4 py-2 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 w-full sm:w-auto"
         >
           <option value="week">Неделя</option>
           <option value="month">Месяц</option>

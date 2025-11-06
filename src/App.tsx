@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Landing } from './components/Landing';
 import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './components/Dashboard';
@@ -14,12 +14,24 @@ import { Patient, Doctor, Appointment, Payment, Expense } from './types';
 function App() {
   const [showLanding, setShowLanding] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [language, setLanguage] = useLocalStorage<'ru' | 'en'>('language', 'ru');
   const [patients, setPatients] = useLocalStorage<Patient[]>('patients', mockPatients);
   const [doctors, setDoctors] = useLocalStorage<Doctor[]>('doctors', mockDoctors);
   const [appointments, setAppointments] = useLocalStorage<Appointment[]>('appointments', mockAppointments);
   const [payments, setPayments] = useLocalStorage<Payment[]>('payments', mockPayments);
   const [expenses, setExpenses] = useLocalStorage<Expense[]>('expenses', []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleAddPatient = (patientData: Omit<Patient, 'id' | 'createdAt'>) => {
     const newPatient: Patient = {
@@ -199,15 +211,28 @@ function App() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 overflow-hidden">
       <Sidebar
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(tab) => {
+          setActiveTab(tab);
+          setIsSidebarOpen(false);
+        }}
         language={language}
         onLanguageChange={setLanguage}
+        isSidebarOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
       />
       <main className="flex-1 overflow-y-auto flex flex-col">
-        <div className="p-6 flex-1 flex flex-col">
+        <div className="p-4 md:p-6 flex-1 flex flex-col">
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="lg:hidden mb-4 bg-white p-2 rounded-lg shadow-sm border border-gray-200 w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors"
+          >
+            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
           {renderContent()}
         </div>
       </main>

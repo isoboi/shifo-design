@@ -8,7 +8,8 @@ import {
   Settings,
   Activity,
   TrendingDown,
-  Languages
+  Languages,
+  X
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -16,6 +17,8 @@ interface SidebarProps {
   onTabChange: (tab: string) => void;
   language: string;
   onLanguageChange: (lang: string) => void;
+  isSidebarOpen: boolean;
+  onClose: () => void;
 }
 
 const menuItems = [
@@ -28,9 +31,24 @@ const menuItems = [
   { id: 'settings', label: 'Настройки', icon: Settings },
 ];
 
-export function Sidebar({ activeTab, onTabChange, language, onLanguageChange }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange, language, onLanguageChange, isSidebarOpen, onClose }: SidebarProps) {
   return (
-    <div className="bg-white h-screen w-64 shadow-lg flex flex-col">
+    <>
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+      <div className={`bg-white h-screen w-64 shadow-lg flex flex-col fixed lg:static z-50 transition-transform duration-300 ${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}>
+        <button
+          onClick={onClose}
+          className="lg:hidden absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <X size={20} className="text-gray-600" />
+        </button>
       <div className="p-6 border-b border-gray-200">
         <h1 className="text-xl font-bold text-gray-800">
           МедКлиника
@@ -102,6 +120,7 @@ export function Sidebar({ activeTab, onTabChange, language, onLanguageChange }: 
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

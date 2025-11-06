@@ -124,65 +124,64 @@ export function DoctorManagement({
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Управление врачами</h1>
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Управление врачами</h1>
         <button
           onClick={() => setShowAddForm(true)}
-          className="bg-sky-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-sky-600 transition-colors"
+          className="bg-sky-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-sky-600 transition-colors w-full sm:w-auto justify-center"
         >
-          <Plus size={20} />
-          <span>Добавить врача</span>
+          <Plus size={18} />
+          <span className="text-sm md:text-base">Добавить врача</span>
         </button>
       </div>
 
-      {/* Поиск */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
         <input
           type="text"
           placeholder="Поиск врачей..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+          className="w-full pl-10 pr-4 py-2 md:py-3 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
         />
       </div>
 
       {/* Форма добавления/редактирования */}
       {(showAddForm || editingDoctor) && (
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <h2 className="text-xl font-semibold mb-4">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100">
+          <h2 className="text-lg md:text-xl font-semibold mb-4">
             {editingDoctor ? 'Редактировать врача' : 'Добавить нового врача'}
           </h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Имя</label>
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">Имя</label>
                 <input
                   type="text"
                   required
                   value={formData.firstName}
                   onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                  className="w-full px-3 py-2 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Фамилия</label>
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">Фамилия</label>
                 <input
                   type="text"
                   required
                   value={formData.lastName}
                   onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                  className="w-full px-3 py-2 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Специализация</label>
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">Специализация</label>
                 <select
                   required
                   value={formData.specialization}
                   onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                  className="w-full px-3 py-2 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                 >
                   <option value="">Выберите специализацию</option>
                   {specializations.map(spec => (
@@ -191,55 +190,55 @@ export function DoctorManagement({
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Телефон</label>
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">Телефон</label>
                 <input
                   type="tel"
                   required
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                  className="w-full px-3 py-2 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">Email</label>
                 <input
                   type="email"
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                  className="w-full px-3 py-2 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Номер лицензии</label>
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">Номер лицензии</label>
                 <input
                   type="text"
                   required
                   value={formData.licenseNumber}
                   onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                  className="w-full px-3 py-2 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Опыт работы (лет)</label>
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">Опыт работы (лет)</label>
                 <input
                   type="number"
                   required
                   min="0"
                   value={formData.experience}
                   onChange={(e) => setFormData({ ...formData, experience: Number(e.target.value) })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                  className="w-full px-3 py-2 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Стоимость консультации (₽)</label>
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">Стоимость консультации (₽)</label>
                 <input
                   type="number"
                   required
                   min="0"
                   value={formData.consultationFee}
                   onChange={(e) => setFormData({ ...formData, consultationFee: Number(e.target.value) })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                  className="w-full px-3 py-2 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                 />
               </div>
             </div>
@@ -249,7 +248,7 @@ export function DoctorManagement({
               <h3 className="text-lg font-medium text-gray-900">Рабочие часы</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Начало рабочего дня</label>
+                  <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">Начало рабочего дня</label>
                   <input
                     type="time"
                     required
@@ -258,11 +257,11 @@ export function DoctorManagement({
                       ...formData, 
                       workingHours: { ...formData.workingHours, start: e.target.value }
                     })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                    className="w-full px-3 py-2 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Конец рабочего дня</label>
+                  <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1">Конец рабочего дня</label>
                   <input
                     type="time"
                     required
@@ -271,7 +270,7 @@ export function DoctorManagement({
                       ...formData, 
                       workingHours: { ...formData.workingHours, end: e.target.value }
                     })}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                    className="w-full px-3 py-2 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                   />
                 </div>
               </div>
@@ -293,17 +292,17 @@ export function DoctorManagement({
               </div>
             </div>
 
-            <div className="flex space-x-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <button
                 type="submit"
-                className="bg-sky-500 text-white px-6 py-2 rounded-lg hover:bg-sky-600 transition-colors"
+                className="bg-sky-500 text-white px-6 py-2 rounded-lg hover:bg-sky-600 transition-colors text-sm md:text-base"
               >
                 {editingDoctor ? 'Сохранить изменения' : 'Добавить врача'}
               </button>
               <button
                 type="button"
                 onClick={handleCancel}
-                className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+                className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors text-sm md:text-base"
               >
                 Отмена
               </button>
@@ -312,62 +311,63 @@ export function DoctorManagement({
         </div>
       )}
 
-      {/* Список врачей */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        <div className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Список врачей ({filteredDoctors.length})</h2>
-          <div className="space-y-4">
+        <div className="p-4 md:p-6">
+          <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Список врачей ({filteredDoctors.length})</h2>
+          <div className="space-y-3 md:space-y-4">
             {filteredDoctors.map((doctor) => (
               <div
                 key={doctor.id}
-                className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:shadow-md transition-shadow"
+                className="flex flex-col lg:flex-row lg:items-center lg:justify-between p-3 md:p-4 border border-gray-100 rounded-lg hover:shadow-md transition-shadow gap-3"
               >
-                <div className="flex items-center space-x-4">
-                  <div className="h-12 w-12 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full flex items-center justify-center">
-                    <UserCheck className="h-6 w-6 text-white" />
+                <div className="flex items-start space-x-3 md:space-x-4 min-w-0 flex-1">
+                  <div className="h-10 w-10 md:h-12 md:w-12 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <UserCheck className="h-5 w-5 md:h-6 md:w-6 text-white" />
                   </div>
-                  <div>
-                    <h3 className="font-medium text-gray-900">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-medium text-gray-900 text-sm md:text-base truncate">
                       {doctor.firstName} {doctor.lastName}
                     </h3>
-                    <p className="text-sm text-gray-600">{doctor.specialization}</p>
-                    <div className="flex items-center space-x-4 mt-1">
-                      <div className="flex items-center text-sm text-gray-500">
-                        <Phone size={14} className="mr-1" />
-                        {doctor.phone}
+                    <p className="text-xs md:text-sm text-gray-600">{doctor.specialization}</p>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-1 gap-1 sm:gap-0">
+                      <div className="flex items-center text-xs md:text-sm text-gray-500">
+                        <Phone size={12} className="mr-1 flex-shrink-0" />
+                        <span className="truncate">{doctor.phone}</span>
                       </div>
-                      <div className="flex items-center text-sm text-gray-500">
-                        <Mail size={14} className="mr-1" />
-                        {doctor.email}
+                      <div className="flex items-center text-xs md:text-sm text-gray-500">
+                        <Mail size={12} className="mr-1 flex-shrink-0" />
+                        <span className="truncate">{doctor.email}</span>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium text-gray-900">
-                    {doctor.consultationFee.toLocaleString()} ₽
-                  </p>
-                  <div className="flex items-center text-sm text-gray-500 mt-1">
-                    <Clock size={14} className="mr-1" />
-                    {doctor.workingHours.start} - {doctor.workingHours.end}
+                <div className="flex items-center justify-between lg:justify-end gap-3 lg:gap-4">
+                  <div className="text-left lg:text-right">
+                    <p className="text-sm font-medium text-gray-900">
+                      {doctor.consultationFee.toLocaleString()} ₽
+                    </p>
+                    <div className="flex items-center text-xs md:text-sm text-gray-500 mt-1">
+                      <Clock size={12} className="mr-1" />
+                      {doctor.workingHours.start} - {doctor.workingHours.end}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Опыт: {doctor.experience} лет
+                    </p>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Опыт: {doctor.experience} лет
-                  </p>
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleEdit(doctor)}
-                    className="p-2 text-gray-600 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors"
-                  >
-                    <Edit size={16} />
-                  </button>
-                  <button
-                    onClick={() => onDeleteDoctor(doctor.id)}
-                    className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                  <div className="flex space-x-2 flex-shrink-0">
+                    <button
+                      onClick={() => handleEdit(doctor)}
+                      className="p-2 text-gray-600 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-colors"
+                    >
+                      <Edit size={16} />
+                    </button>
+                    <button
+                      onClick={() => onDeleteDoctor(doctor.id)}
+                      className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
