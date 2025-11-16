@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Plus, Search, Edit, Trash2, UserCheck, Phone, Mail, Clock } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, UserCheck, Phone, Mail, Clock, X, Settings } from 'lucide-react';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 import { Doctor } from '../types';
 
 interface DoctorManagementProps {
@@ -9,15 +10,21 @@ interface DoctorManagementProps {
   onDeleteDoctor: (id: string) => void;
 }
 
-export function DoctorManagement({ 
-  doctors, 
-  onAddDoctor, 
-  onUpdateDoctor, 
-  onDeleteDoctor 
+export function DoctorManagement({
+  doctors,
+  onAddDoctor,
+  onUpdateDoctor,
+  onDeleteDoctor
 }: DoctorManagementProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
+  const [showSpecializationsManager, setShowSpecializationsManager] = useState(false);
+  const [newSpecialization, setNewSpecialization] = useState('');
+  const [specializations, setSpecializations] = useLocalStorage<string[]>('specializations', [
+    'Терапевт', 'Кардиолог', 'Невролог', 'Хирург', 'Офтальмолог',
+    'Отоларинголог', 'Гинеколог', 'Уролог', 'Дерматолог', 'Педиатр'
+  ]);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -118,22 +125,43 @@ export function DoctorManagement({
   };
 
   const dayNames = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-  const specializations = [
-    'Терапевт', 'Кардиолог', 'Невролог', 'Хирург', 'Офтальмолог',
-    'Отоларинголог', 'Гинеколог', 'Уролог', 'Дерматолог', 'Педиатр'
-  ];
+
+  const handleAddSpecialization = () => {
+    if (newSpecialization.trim() && !specializations.includes(newSpecialization.trim())) {
+      setSpecializations([...specializations, newSpecialization.trim()]);
+      setNewSpecialization('');
+    }
+  };
+
+  const handleDeleteSpecialization = (spec: string) => {
+    const doctorsWithSpec = doctors.filter(d => d.specialization === spec);
+    if (doctorsWithSpec.length > 0) {
+      alert(`Невозможно удалить специализацию "${spec}". Её используют ${doctorsWithSpec.length} врач(ей).`);
+      return;
+    }
+    setSpecializations(specializations.filter(s => s !== spec));
+  };
 
   return (
     <div className="space-y-4 md:space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Управление врачами</h1>
-        <button
-          onClick={() => setShowAddForm(true)}
-          className="bg-sky-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-sky-600 transition-colors w-full sm:w-auto justify-center"
-        >
-          <Plus size={18} />
-          <span className="text-sm md:text-base">Добавить врача</span>
-        </button>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+          <button
+            onClick={() => setShowSpecializationsManager(!showSpecializationsManager)}
+            className="bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-700 transition-colors justify-center"
+          >
+            <Settings size={18} />
+            <span className="text-sm md:text-base">Специализации</span>
+          </button>
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="bg-sky-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-sky-600 transition-colors justify-center"
+          >
+            <Plus size={18} />
+            <span className="text-sm md:text-base">Добавить врача</span>
+          </button>
+        </div>
       </div>
 
       <div className="relative">
@@ -146,6 +174,67 @@ export function DoctorManagement({
           className="w-full pl-10 pr-4 py-2 md:py-3 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
         />
       </div>
+
+      {/* Менеджер специализаций */}
+      {showSpecializationsManager && (
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg md:text-xl font-semibold text-gray-900">Управление специализациями</h2>
+            <button
+              onClick={() => setShowSpecializationsManager(false)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Новая специализация..."
+                value={newSpecialization}
+                onChange={(e) => setNewSpecialization(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleAddSpecialization()}
+                className="flex-1 px-3 py-2 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+              />
+              <button
+                onClick={handleAddSpecialization}
+                className="bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-600 transition-colors flex items-center space-x-2"
+              >
+                <Plus size={18} />
+                <span className="text-sm md:text-base">Добавить</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {specializations.map((spec) => {
+                const doctorsCount = doctors.filter(d => d.specialization === spec).length;
+                return (
+                  <div
+                    key={spec}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 hover:shadow-sm transition-shadow"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 text-sm md:text-base truncate">{spec}</p>
+                      <p className="text-xs text-gray-500">
+                        {doctorsCount} врач{doctorsCount === 1 ? '' : doctorsCount > 1 && doctorsCount < 5 ? 'а' : 'ей'}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleDeleteSpecialization(spec)}
+                      className="ml-2 p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
+                      title="Удалить специализацию"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Форма добавления/редактирования */}
       {(showAddForm || editingDoctor) && (
