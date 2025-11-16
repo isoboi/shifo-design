@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import { 
-  TrendingUp, 
-  Users, 
-  Calendar, 
-  DollarSign, 
+import React, { useState, useEffect } from 'react';
+import {
+  TrendingUp,
+  Users,
+  Calendar,
+  DollarSign,
   Activity,
   BarChart3,
   PieChart,
   LineChart
 } from 'lucide-react';
 import { Patient, Doctor, Appointment, Payment } from '../types';
+import { SkeletonLoader } from './SkeletonLoader';
 
 interface AnalyticsProps {
   patients: Patient[];
@@ -20,6 +21,24 @@ interface AnalyticsProps {
 
 export function Analytics({ patients, doctors, appointments, payments }: AnalyticsProps) {
   const [selectedPeriod, setSelectedPeriod] = useState('month');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, [selectedPeriod]);
 
   // Получение даты начала периода
   const getPeriodStartDate = () => {
@@ -27,7 +46,7 @@ export function Analytics({ patients, doctors, appointments, payments }: Analyti
     switch (selectedPeriod) {
       case 'week':
         const weekStart = new Date(now);
-        weekStart.setDate(now.getDate() - now.getDay() + 1); // Понедельник
+        weekStart.setDate(now.getDate() - now.getDay() + 1);
         weekStart.setHours(0, 0, 0, 0);
         return weekStart;
       case 'month':
@@ -85,7 +104,7 @@ export function Analytics({ patients, doctors, appointments, payments }: Analyti
       totalAppointments: doctorAppointments.length,
       completedAppointments: completedAppointments.length,
       revenue,
-      efficiency: doctorAppointments.length > 0 ? 
+      efficiency: doctorAppointments.length > 0 ?
         (completedAppointments.length / doctorAppointments.length) * 100 : 0
     };
   }).sort((a, b) => b.revenue - a.revenue);
@@ -96,79 +115,8 @@ export function Analytics({ patients, doctors, appointments, payments }: Analyti
     return acc;
   }, {} as Record<string, number>);
 
-  // Статистика по периодам
-  const getPeriodStats = () => {
-    const now = new Date();
-    
-    if (selectedPeriod === 'week') {
-      // Статистика по дням недели
-      return Array.from({ length: 7 }, (_, i) => {
-        const date = new Date(now);
-        date.setDate(now.getDate() - now.getDay() + 1 + i); // Понедельник + i дней
-        const dateStr = date.toISOString().split('T')[0];
-        
-        const dayAppointments = filteredAppointments.filter(apt => apt.date === dateStr);
-        const dayPayments = filteredPayments.filter(p => {
-          const paymentDate = new Date(p.createdAt).toISOString().split('T')[0];
-          return paymentDate === dateStr && p.status === 'paid';
-        });
-        
-        return {
-          period: date.toLocaleDateString('ru-RU', { weekday: 'short' }),
-          appointments: dayAppointments.length,
-          revenue: dayPayments.reduce((sum, p) => sum + p.amount, 0)
-        };
-      });
-    } else if (selectedPeriod === 'month') {
-      // Статистика по неделям месяца
-      const weeksInMonth = Math.ceil(new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate() / 7);
-      return Array.from({ length: weeksInMonth }, (_, i) => {
-        const weekStart = new Date(now.getFullYear(), now.getMonth(), i * 7 + 1);
-        const weekEnd = new Date(now.getFullYear(), now.getMonth(), (i + 1) * 7);
-        
-        const weekAppointments = filteredAppointments.filter(apt => {
-          const aptDate = new Date(apt.date);
-          return aptDate >= weekStart && aptDate <= weekEnd;
-        });
-        const weekPayments = filteredPayments.filter(p => {
-          const paymentDate = new Date(p.createdAt);
-          return paymentDate >= weekStart && paymentDate <= weekEnd && p.status === 'paid';
-        });
-        
-        return {
-          period: `Неделя ${i + 1}`,
-          appointments: weekAppointments.length,
-          revenue: weekPayments.reduce((sum, p) => sum + p.amount, 0)
-        };
-      });
-    } else {
-      // Статистика по месяцам года
-      return Array.from({ length: 12 }, (_, i) => {
-        const month = i + 1;
-        const monthAppointments = filteredAppointments.filter(apt => {
-          const aptMonth = new Date(apt.date).getMonth() + 1;
-          return aptMonth === month;
-        });
-        const monthPayments = filteredPayments.filter(p => {
-          const paymentMonth = new Date(p.createdAt).getMonth() + 1;
-          return paymentMonth === month && p.status === 'paid';
-        });
-        
-        return {
-          period: new Date(2024, i, 1).toLocaleDateString('ru-RU', { month: 'short' }),
-          appointments: monthAppointments.length,
-          revenue: monthPayments.reduce((sum, p) => sum + p.amount, 0)
-        };
-      });
-    }
-  };
-
-  const periodStats = getPeriodStats();
-
   // Расчет процентных изменений
   const getPercentageChange = () => {
-    // Для демонстрации возвращаем случайные значения
-    // В реальном приложении здесь была бы логика сравнения с предыдущим периодом
     return {
       patients: Math.floor(Math.random() * 20) + 5,
       appointments: Math.floor(Math.random() * 15) + 3,
@@ -177,6 +125,10 @@ export function Analytics({ patients, doctors, appointments, payments }: Analyti
   };
 
   const percentageChanges = getPercentageChange();
+
+  if (isLoading) {
+    return <SkeletonLoader />;
+  }
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -194,76 +146,76 @@ export function Analytics({ patients, doctors, appointments, payments }: Analyti
       </div>
 
       {/* Основные метрики */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Всего пациентов</p>
-              <p className="text-2xl font-bold text-gray-900">{totalPatients}</p>
+              <p className="text-xs md:text-sm font-medium text-gray-600">Всего пациентов</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">{totalPatients}</p>
             </div>
-            <div className="h-12 w-12 bg-sky-100 rounded-lg flex items-center justify-center">
-              <Users className="h-6 w-6 text-sky-600" />
+            <div className="h-10 w-10 md:h-12 md:w-12 bg-sky-100 rounded-lg flex items-center justify-center">
+              <Users className="h-5 w-5 md:h-6 md:w-6 text-sky-600" />
             </div>
           </div>
-          <div className="mt-4 flex items-center text-sm">
-            <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
+          <div className="mt-3 md:mt-4 flex items-center text-xs md:text-sm">
+            <TrendingUp className="h-3 w-3 md:h-4 md:w-4 text-green-500 mr-1" />
             <span className="text-green-600">+{percentageChanges.patients}% за {selectedPeriod === 'week' ? 'неделю' : selectedPeriod === 'month' ? 'месяц' : 'год'}</span>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Всего врачей</p>
-              <p className="text-2xl font-bold text-gray-900">{totalDoctors}</p>
+              <p className="text-xs md:text-sm font-medium text-gray-600">Всего врачей</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">{totalDoctors}</p>
             </div>
-            <div className="h-12 w-12 bg-emerald-100 rounded-lg flex items-center justify-center">
-              <Activity className="h-6 w-6 text-emerald-600" />
+            <div className="h-10 w-10 md:h-12 md:w-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+              <Activity className="h-5 w-5 md:h-6 md:w-6 text-emerald-600" />
             </div>
           </div>
-          <div className="mt-4 flex items-center text-sm">
+          <div className="mt-3 md:mt-4 flex items-center text-xs md:text-sm">
             <span className="text-gray-600">Активных: {totalDoctors}</span>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Всего приемов</p>
-              <p className="text-2xl font-bold text-gray-900">{totalAppointments}</p>
+              <p className="text-xs md:text-sm font-medium text-gray-600">Всего приемов</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">{totalAppointments}</p>
             </div>
-            <div className="h-12 w-12 bg-amber-100 rounded-lg flex items-center justify-center">
-              <Calendar className="h-6 w-6 text-amber-600" />
+            <div className="h-10 w-10 md:h-12 md:w-12 bg-amber-100 rounded-lg flex items-center justify-center">
+              <Calendar className="h-5 w-5 md:h-6 md:w-6 text-amber-600" />
             </div>
           </div>
-          <div className="mt-4 flex items-center text-sm">
-            <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
+          <div className="mt-3 md:mt-4 flex items-center text-xs md:text-sm">
+            <TrendingUp className="h-3 w-3 md:h-4 md:w-4 text-green-500 mr-1" />
             <span className="text-green-600">+{percentageChanges.appointments}% за {selectedPeriod === 'week' ? 'неделю' : selectedPeriod === 'month' ? 'месяц' : 'год'}</span>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Общий доход</p>
-              <p className="text-2xl font-bold text-gray-900">{totalRevenue.toLocaleString()} ₽</p>
+              <p className="text-xs md:text-sm font-medium text-gray-600">Общий доход</p>
+              <p className="text-xl md:text-2xl font-bold text-gray-900">{totalRevenue.toLocaleString()} ₽</p>
             </div>
-            <div className="h-12 w-12 bg-rose-100 rounded-lg flex items-center justify-center">
-              <DollarSign className="h-6 w-6 text-rose-600" />
+            <div className="h-10 w-10 md:h-12 md:w-12 bg-rose-100 rounded-lg flex items-center justify-center">
+              <DollarSign className="h-5 w-5 md:h-6 md:w-6 text-rose-600" />
             </div>
           </div>
-          <div className="mt-4 flex items-center text-sm">
-            <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
+          <div className="mt-3 md:mt-4 flex items-center text-xs md:text-sm">
+            <TrendingUp className="h-3 w-3 md:h-4 md:w-4 text-green-500 mr-1" />
             <span className="text-green-600">+{percentageChanges.revenue}% за {selectedPeriod === 'week' ? 'неделю' : selectedPeriod === 'month' ? 'месяц' : 'год'}</span>
           </div>
         </div>
       </div>
 
       {/* Статистика по приемам */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Статус приемов</h3>
+            <h3 className="text-base md:text-lg font-semibold text-gray-900">Статус приемов</h3>
             <PieChart className="h-5 w-5 text-gray-500" />
           </div>
           <div className="space-y-3">
@@ -287,9 +239,9 @@ export function Analytics({ patients, doctors, appointments, payments }: Analyti
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Типы приемов</h3>
+            <h3 className="text-base md:text-lg font-semibold text-gray-900">Типы приемов</h3>
             <BarChart3 className="h-5 w-5 text-gray-500" />
           </div>
           <div className="space-y-3">
@@ -302,8 +254,8 @@ export function Analytics({ patients, doctors, appointments, payments }: Analyti
                 </span>
                 <div className="flex items-center space-x-2">
                   <div className="w-20 bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-sky-500 h-2 rounded-full" 
+                    <div
+                      className="bg-sky-500 h-2 rounded-full"
                       style={{ width: `${totalAppointments > 0 ? (count / totalAppointments) * 100 : 0}%` }}
                     />
                   </div>
@@ -315,75 +267,39 @@ export function Analytics({ patients, doctors, appointments, payments }: Analyti
         </div>
       </div>
 
-      {/* График по периодам */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Статистика за {selectedPeriod === 'week' ? 'неделю' : selectedPeriod === 'month' ? 'месяц' : 'год'}
-          </h3>
-          <div className="flex items-center space-x-4 text-sm">
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-blue-500 rounded"></div>
-              <span className="text-gray-600">Записи</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-green-500 rounded"></div>
-              <span className="text-gray-600">Доход</span>
-            </div>
-          </div>
-        </div>
-        <div className="space-y-4">
-          {periodStats.map((stat, index) => (
-            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div className="font-medium text-gray-900">{stat.period}</div>
-              <div className="flex items-center space-x-6">
-                <div className="text-center">
-                  <div className="text-sm text-gray-500">Записи</div>
-                  <div className="font-semibold text-blue-600">{stat.appointments}</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-sm text-gray-500">Доход</div>
-                  <div className="font-semibold text-green-600">{stat.revenue.toLocaleString()} ₽</div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Рейтинг врачей */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+      <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Рейтинг врачей</h3>
+          <h3 className="text-base md:text-lg font-semibold text-gray-900">Рейтинг врачей</h3>
           <LineChart className="h-5 w-5 text-gray-500" />
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
+        <div className="overflow-x-auto -mx-4 md:mx-0">
+          <table className="w-full min-w-[600px]">
             <thead>
               <tr className="border-b border-gray-200">
-                <th className="text-left py-3 px-4 font-medium text-gray-600">Врач</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-600">Специализация</th>
-                <th className="text-center py-3 px-4 font-medium text-gray-600">Приемы</th>
-                <th className="text-center py-3 px-4 font-medium text-gray-600">Завершено</th>
-                <th className="text-center py-3 px-4 font-medium text-gray-600">Эффективность</th>
-                <th className="text-right py-3 px-4 font-medium text-gray-600">Доход</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Врач</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-600 text-sm">Специализация</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-600 text-sm">Приемы</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-600 text-sm">Завершено</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-600 text-sm">Эффективность</th>
+                <th className="text-right py-3 px-4 font-medium text-gray-600 text-sm">Доход</th>
               </tr>
             </thead>
             <tbody>
               {doctorStats.map((stat) => (
                 <tr key={stat.doctor.id} className="border-b border-gray-100">
                   <td className="py-3 px-4">
-                    <div className="font-medium text-gray-900">
+                    <div className="font-medium text-gray-900 text-sm">
                       {stat.doctor.firstName} {stat.doctor.lastName}
                     </div>
                   </td>
-                  <td className="py-3 px-4 text-gray-600">
+                  <td className="py-3 px-4 text-gray-600 text-sm">
                     {stat.doctor.specialization}
                   </td>
-                  <td className="py-3 px-4 text-center font-medium">
+                  <td className="py-3 px-4 text-center font-medium text-sm">
                     {stat.totalAppointments}
                   </td>
-                  <td className="py-3 px-4 text-center text-green-600 font-medium">
+                  <td className="py-3 px-4 text-center text-green-600 font-medium text-sm">
                     {stat.completedAppointments}
                   </td>
                   <td className="py-3 px-4 text-center">
@@ -395,7 +311,7 @@ export function Analytics({ patients, doctors, appointments, payments }: Analyti
                       {stat.efficiency.toFixed(1)}%
                     </span>
                   </td>
-                  <td className="py-3 px-4 text-right font-semibold text-gray-900">
+                  <td className="py-3 px-4 text-right font-semibold text-gray-900 text-sm">
                     {stat.revenue.toLocaleString()} ₽
                   </td>
                 </tr>
@@ -406,15 +322,15 @@ export function Analytics({ patients, doctors, appointments, payments }: Analyti
       </div>
 
       {/* Методы оплаты */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Методы оплаты</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100">
+        <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-4">Методы оплаты</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {Object.entries(paymentMethodStats).map(([method, amount]) => (
             <div key={method} className="text-center">
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-xl md:text-2xl font-bold text-gray-900">
                 {amount.toLocaleString()} ₽
               </div>
-              <div className="text-sm text-gray-600 capitalize">
+              <div className="text-xs md:text-sm text-gray-600 capitalize">
                 {method === 'cash' ? 'Наличные' :
                  method === 'card' ? 'Карта' :
                  method === 'insurance' ? 'Страховка' : 'Перевод'}
