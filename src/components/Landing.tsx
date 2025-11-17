@@ -22,14 +22,16 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 
 interface LandingProps {
   onGetStarted: () => void;
+  onBooking?: () => void;
 }
 
-export function Landing({ onGetStarted }: LandingProps) {
+export function Landing({ onGetStarted, onBooking }: LandingProps) {
   const [language, setLanguage] = useLocalStorage<'ru' | 'en'>('landing-language', 'ru');
 
   const translations = {
     ru: {
       loginButton: 'Войти в систему',
+      bookAppointment: 'Записаться на прием',
       modernSystem: 'Современная система управления',
       heroTitle: 'Цифровое будущее вашей клиники',
       heroDescription: 'Полнофункциональная система для управления медицинской клиникой. Управляйте пациентами, врачами, записями и финансами в одном месте.',
@@ -84,6 +86,7 @@ export function Landing({ onGetStarted }: LandingProps) {
     },
     en: {
       loginButton: 'Login to System',
+      bookAppointment: 'Book Appointment',
       modernSystem: 'Modern Management System',
       heroTitle: 'Digital Future of Your Clinic',
       heroDescription: 'Full-featured system for managing medical clinics. Manage patients, doctors, appointments and finances in one place.',
@@ -181,6 +184,14 @@ export function Landing({ onGetStarted }: LandingProps) {
                   EN
                 </button>
               </div>
+              {onBooking && (
+                <button
+                  onClick={onBooking}
+                  className="bg-sky-600 text-white px-4 md:px-6 py-2 rounded-lg hover:bg-sky-700 transition-colors font-medium text-sm md:text-base"
+                >
+                  {t.bookAppointment}
+                </button>
+              )}
               <button
                 onClick={onGetStarted}
                 className="bg-blue-600 text-white px-4 md:px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm md:text-base"

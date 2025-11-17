@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Landing } from './components/Landing';
+import { BookingPage } from './components/BookingPage';
 import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './components/Dashboard';
 import { PatientManagement } from './components/PatientManagement';
@@ -13,6 +14,7 @@ import { Patient, Doctor, Appointment, Payment, Expense } from './types';
 
 function App() {
   const [showLanding, setShowLanding] = useState(true);
+  const [showBooking, setShowBooking] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [language, setLanguage] = useLocalStorage<'ru' | 'en'>('language', 'ru');
@@ -206,8 +208,17 @@ function App() {
     }
   };
 
+  if (showBooking) {
+    return <BookingPage onBack={() => setShowBooking(false)} />;
+  }
+
   if (showLanding) {
-    return <Landing onGetStarted={() => setShowLanding(false)} />;
+    return (
+      <Landing
+        onGetStarted={() => setShowLanding(false)}
+        onBooking={() => setShowBooking(true)}
+      />
+    );
   }
 
   return (
