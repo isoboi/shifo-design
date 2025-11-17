@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, MapPin, Building2, User, Phone, Mail, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, MapPin, Building2, User, Phone, Mail, ArrowLeft, Search } from 'lucide-react';
 
 interface BookingPageProps {
   onBack: () => void;
@@ -9,6 +9,7 @@ export function BookingPage({ onBack }: BookingPageProps) {
   const [selectedClinic, setSelectedClinic] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -18,11 +19,22 @@ export function BookingPage({ onBack }: BookingPageProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const clinics = [
-    { id: '1', name: 'Центральная Городская Больница', address: 'ул. Ленина, 45' },
-    { id: '2', name: 'Клиника "Здоровье+"', address: 'пр. Мира, 12' },
-    { id: '3', name: 'Медицинский Центр "Семейный"', address: 'ул. Пушкина, 78' },
-    { id: '4', name: 'Поликлиника №1', address: 'ул. Гагарина, 23' }
+    { id: '1', name: 'Центральная Городская Больница', address: 'ул. Ленина, 45', city: 'Ташкент' },
+    { id: '2', name: 'Клиника "Здоровье+"', address: 'пр. Мира, 12', city: 'Ташкент' },
+    { id: '3', name: 'Медицинский Центр "Семейный"', address: 'ул. Пушкина, 78', city: 'Ташкент' },
+    { id: '4', name: 'Поликлиника №1', address: 'ул. Гагарина, 23', city: 'Ташкент' },
+    { id: '5', name: 'Детская поликлиника №2', address: 'ул. Амира Темура, 56', city: 'Ташкент' },
+    { id: '6', name: 'Клиника "МедЦентр"', address: 'ул. Бабура, 89', city: 'Ташкент' },
+    { id: '7', name: 'Больница им. Ибн Сины', address: 'пр. Узбекистана, 34', city: 'Ташкент' },
+    { id: '8', name: 'Стоматологическая клиника "Дент+"', address: 'ул. Навои, 12', city: 'Ташкент' },
+    { id: '9', name: 'Многопрофильная клиника "Здравица"', address: 'ул. Шота Руставели, 45', city: 'Ташкент' },
+    { id: '10', name: 'Медицинский центр "Эталон"', address: 'пр. Бунёдкор, 67', city: 'Ташкент' }
   ];
+
+  const filteredClinics = clinics.filter(clinic =>
+    clinic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    clinic.address.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const getCurrentWeek = () => {
     const today = new Date();
@@ -143,26 +155,63 @@ export function BookingPage({ onBack }: BookingPageProps) {
                 <Building2 className="h-5 w-5 text-sky-600" />
                 <span>Выберите клинику</span>
               </label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {clinics.map((clinic) => (
-                  <button
-                    key={clinic.id}
-                    type="button"
-                    onClick={() => setSelectedClinic(clinic.id)}
-                    className={`p-4 rounded-xl border-2 text-left transition-all ${
-                      selectedClinic === clinic.id
-                        ? 'border-sky-600 bg-sky-50'
-                        : 'border-gray-200 hover:border-sky-300'
-                    }`}
-                  >
-                    <div className="font-semibold text-gray-900 mb-1">{clinic.name}</div>
-                    <div className="flex items-center space-x-1 text-sm text-gray-600">
-                      <MapPin className="h-4 w-4" />
-                      <span>{clinic.address}</span>
-                    </div>
-                  </button>
-                ))}
+
+              <div className="relative mb-4">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Поиск по названию или адресу..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                />
               </div>
+
+              <div className="border border-gray-200 rounded-xl max-h-64 overflow-y-auto">
+                {filteredClinics.length === 0 ? (
+                  <div className="p-6 text-center text-gray-500">
+                    Клиники не найдены
+                  </div>
+                ) : (
+                  filteredClinics.map((clinic) => (
+                    <button
+                      key={clinic.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedClinic(clinic.id);
+                        setSearchQuery('');
+                      }}
+                      className={`w-full p-4 text-left transition-all border-b border-gray-100 last:border-b-0 ${
+                        selectedClinic === clinic.id
+                          ? 'bg-sky-50 border-l-4 border-l-sky-600'
+                          : 'hover:bg-gray-50'
+                      }`}
+                    >
+                      <div className="font-semibold text-gray-900 mb-1">{clinic.name}</div>
+                      <div className="flex items-center space-x-1 text-sm text-gray-600">
+                        <MapPin className="h-4 w-4 flex-shrink-0" />
+                        <span>{clinic.address}, {clinic.city}</span>
+                      </div>
+                    </button>
+                  ))
+                )}
+              </div>
+
+              {selectedClinic && (
+                <div className="mt-4 p-4 bg-sky-50 border border-sky-200 rounded-xl">
+                  <div className="flex items-start space-x-2">
+                    <Building2 className="h-5 w-5 text-sky-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <div className="font-semibold text-sky-900">
+                        {clinics.find(c => c.id === selectedClinic)?.name}
+                      </div>
+                      <div className="text-sm text-sky-700">
+                        {clinics.find(c => c.id === selectedClinic)?.address}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>
