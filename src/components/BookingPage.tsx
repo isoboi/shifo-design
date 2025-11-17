@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, MapPin, Building2, User, Phone, Mail, ArrowLeft, Search } from 'lucide-react';
+import { Calendar, Clock, MapPin, Building2, User, Phone, Mail, ArrowLeft, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface BookingPageProps {
   onBack: () => void;
@@ -10,6 +10,7 @@ export function BookingPage({ onBack }: BookingPageProps) {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -41,6 +42,7 @@ export function BookingPage({ onBack }: BookingPageProps) {
     const currentDay = today.getDay();
     const monday = new Date(today);
     monday.setDate(today.getDate() - (currentDay === 0 ? 6 : currentDay - 1));
+    monday.setDate(monday.getDate() + (currentWeekOffset * 7));
 
     const week = [];
     for (let i = 0; i < 7; i++) {
@@ -49,6 +51,25 @@ export function BookingPage({ onBack }: BookingPageProps) {
       week.push(date);
     }
     return week;
+  };
+
+  const goToPreviousWeek = () => {
+    setCurrentWeekOffset(currentWeekOffset - 1);
+  };
+
+  const goToNextWeek = () => {
+    setCurrentWeekOffset(currentWeekOffset + 1);
+  };
+
+  const goToCurrentWeek = () => {
+    setCurrentWeekOffset(0);
+  };
+
+  const getWeekRange = () => {
+    const week = getCurrentWeek();
+    const start = week[0];
+    const end = week[6];
+    return `${start.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })} - ${end.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' })}`;
   };
 
   const timeSlots = [
@@ -215,11 +236,48 @@ export function BookingPage({ onBack }: BookingPageProps) {
             </div>
 
             <div>
-              <label className="flex items-center space-x-2 text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4">
-                <Calendar className="h-4 w-4 md:h-5 md:w-5 text-sky-600" />
-                <span>Выберите день</span>
-              </label>
-              <div className="grid grid-cols-7 gap-1.5 md:gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 md:mb-4 gap-3">
+                <label className="flex items-center space-x-2 text-base md:text-lg font-semibold text-gray-900">
+                  <Calendar className="h-4 w-4 md:h-5 md:w-5 text-sky-600" />
+                  <span>Выберите день</span>
+                </label>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={goToPreviousWeek}
+                    className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                    title="Предыдущая неделя"
+                  >
+                    <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-gray-600" />
+                  </button>
+
+                  <div className="text-xs md:text-sm font-medium text-gray-700 min-w-[140px] md:min-w-[160px] text-center">
+                    {getWeekRange()}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={goToNextWeek}
+                    className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                    title="Следующая неделя"
+                  >
+                    <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-gray-600" />
+                  </button>
+
+                  {currentWeekOffset !== 0 && (
+                    <button
+                      type="button"
+                      onClick={goToCurrentWeek}
+                      className="ml-2 px-3 py-1.5 text-xs md:text-sm bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors font-medium"
+                    >
+                      Сегодня
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-7 gap-1 sm:gap-1.5 md:gap-3">
                 {weekDays.map((day, index) => {
                   const dateStr = day.toISOString().split('T')[0];
                   const isPast = day < new Date(new Date().setHours(0, 0, 0, 0));
@@ -230,21 +288,21 @@ export function BookingPage({ onBack }: BookingPageProps) {
                       type="button"
                       onClick={() => !isPast && setSelectedDate(dateStr)}
                       disabled={isPast}
-                      className={`p-2 md:p-4 rounded-lg md:rounded-xl border-2 text-center transition-all ${
+                      className={`p-1.5 sm:p-2 md:p-4 rounded-md md:rounded-xl border-2 text-center transition-all min-h-[60px] sm:min-h-[70px] md:min-h-0 flex flex-col justify-center ${
                         isPast
                           ? 'border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed'
                           : selectedDate === dateStr
-                          ? 'border-sky-600 bg-sky-50'
-                          : 'border-gray-200 hover:border-sky-300 active:bg-sky-50'
+                          ? 'border-sky-600 bg-sky-50 shadow-sm'
+                          : 'border-gray-200 hover:border-sky-300 active:bg-sky-50 active:border-sky-400'
                       }`}
                     >
-                      <div className={`text-[10px] md:text-sm font-medium mb-0.5 md:mb-1 ${
-                        isPast ? 'text-gray-400' : isToday(day) ? 'text-sky-600' : 'text-gray-600'
+                      <div className={`text-[9px] sm:text-[10px] md:text-sm font-medium mb-0.5 sm:mb-1 uppercase ${
+                        isPast ? 'text-gray-400' : isToday(day) ? 'text-sky-600 font-semibold' : 'text-gray-600'
                       }`}>
                         {getDayName(day)}
                       </div>
-                      <div className={`text-sm md:text-lg font-bold ${
-                        isPast ? 'text-gray-400' : 'text-gray-900'
+                      <div className={`text-xs sm:text-sm md:text-lg font-bold leading-tight ${
+                        isPast ? 'text-gray-400' : selectedDate === dateStr ? 'text-sky-700' : 'text-gray-900'
                       }`}>
                         {formatDate(day)}
                       </div>
