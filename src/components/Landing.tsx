@@ -155,17 +155,17 @@ export function Landing({ onGetStarted, onBooking }: LandingProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <nav className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <Heart className="w-8 h-8 text-blue-600" />
-              <span className="text-2xl font-bold text-gray-900">Shifo</span>
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-14 sm:h-16">
+            <div className="flex items-center space-x-1.5 sm:space-x-2">
+              <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
+              <span className="text-lg sm:text-2xl font-bold text-gray-900">Shifo</span>
             </div>
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
+            <div className="flex items-center gap-1.5 sm:gap-3">
+              <div className="flex items-center space-x-0.5 sm:space-x-1 bg-gray-100 rounded-md sm:rounded-lg p-0.5 sm:p-1">
                 <button
                   onClick={() => setLanguage('ru')}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                  className={`px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-[10px] sm:text-xs font-medium transition-all ${
                     language === 'ru'
                       ? 'bg-white text-gray-900 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
@@ -175,7 +175,7 @@ export function Landing({ onGetStarted, onBooking }: LandingProps) {
                 </button>
                 <button
                   onClick={() => setLanguage('en')}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                  className={`px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-[10px] sm:text-xs font-medium transition-all ${
                     language === 'en'
                       ? 'bg-white text-gray-900 shadow-sm'
                       : 'text-gray-600 hover:text-gray-900'
@@ -187,16 +187,18 @@ export function Landing({ onGetStarted, onBooking }: LandingProps) {
               {onBooking && (
                 <button
                   onClick={onBooking}
-                  className="bg-sky-600 text-white px-4 md:px-6 py-2 rounded-lg hover:bg-sky-700 transition-colors font-medium text-sm md:text-base"
+                  className="bg-sky-600 text-white px-2.5 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md sm:rounded-lg hover:bg-sky-700 transition-colors font-medium text-[11px] sm:text-sm md:text-base whitespace-nowrap"
                 >
-                  {t.bookAppointment}
+                  <span className="hidden sm:inline">{t.bookAppointment}</span>
+                  <span className="sm:hidden">{language === 'ru' ? 'Запись' : 'Book'}</span>
                 </button>
               )}
               <button
                 onClick={onGetStarted}
-                className="bg-blue-600 text-white px-4 md:px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm md:text-base"
+                className="bg-blue-600 text-white px-2.5 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-md sm:rounded-lg hover:bg-blue-700 transition-colors font-medium text-[11px] sm:text-sm md:text-base whitespace-nowrap"
               >
-                {t.loginButton}
+                <span className="hidden sm:inline">{t.loginButton}</span>
+                <span className="sm:hidden">{language === 'ru' ? 'Войти' : 'Login'}</span>
               </button>
             </div>
           </div>
