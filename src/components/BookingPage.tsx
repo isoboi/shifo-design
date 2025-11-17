@@ -237,44 +237,44 @@ export function BookingPage({ onBack }: BookingPageProps) {
             </div>
 
             <div>
-              <div className="mb-3 md:mb-4 space-y-2">
-                <label className="flex items-center space-x-1.5 text-sm md:text-lg font-semibold text-gray-900">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 md:mb-4 gap-3">
+                <label className="flex items-center space-x-2 text-sm md:text-lg font-semibold text-gray-900">
                   <Calendar className="h-4 w-4 md:h-5 md:w-5 text-sky-600" />
                   <span>Выберите день</span>
                 </label>
 
-                <div className="flex items-center justify-between gap-1.5">
+                <div className="flex items-center gap-2">
+                  {currentWeekOffset !== 0 && (
+                    <button
+                      type="button"
+                      onClick={goToCurrentWeek}
+                      className="px-3 py-1.5 text-xs md:text-sm bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors font-medium"
+                    >
+                      Сегодня
+                    </button>
+                  )}
+
                   <button
                     type="button"
                     onClick={goToPreviousWeek}
-                    className="p-1.5 md:p-2 rounded-md md:rounded-lg border border-gray-300 hover:bg-gray-50 active:bg-gray-100 transition-colors flex-shrink-0"
+                    className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 active:bg-gray-100 transition-colors"
                     title="Предыдущая неделя"
                   >
                     <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-gray-600" />
                   </button>
 
-                  <div className="text-[11px] md:text-sm font-medium text-gray-700 flex-1 text-center px-1">
+                  <div className="text-xs md:text-sm font-medium text-gray-700 min-w-[140px] md:min-w-[160px] text-center">
                     {getWeekRange()}
                   </div>
 
                   <button
                     type="button"
                     onClick={goToNextWeek}
-                    className="p-1.5 md:p-2 rounded-md md:rounded-lg border border-gray-300 hover:bg-gray-50 active:bg-gray-100 transition-colors flex-shrink-0"
+                    className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 active:bg-gray-100 transition-colors"
                     title="Следующая неделя"
                   >
                     <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-gray-600" />
                   </button>
-
-                  {currentWeekOffset !== 0 && (
-                    <button
-                      type="button"
-                      onClick={goToCurrentWeek}
-                      className="px-2 md:px-3 py-1 md:py-1.5 text-[10px] md:text-sm bg-sky-100 text-sky-700 rounded-md md:rounded-lg hover:bg-sky-200 transition-colors font-medium flex-shrink-0"
-                    >
-                      Сегодня
-                    </button>
-                  )}
                 </div>
               </div>
 
