@@ -109,7 +109,8 @@ export function BookingPage({ onBack }: BookingPageProps) {
   };
 
   const getDayName = (date: Date) => {
-    return date.toLocaleDateString('ru-RU', { weekday: 'short' });
+    const dayName = date.toLocaleDateString('ru-RU', { weekday: 'short' });
+    return dayName.slice(0, 2);
   };
 
   const isToday = (date: Date) => {
@@ -172,25 +173,25 @@ export function BookingPage({ onBack }: BookingPageProps) {
 
           <form onSubmit={handleSubmit} className="p-4 md:p-8 space-y-6 md:space-y-8">
             <div>
-              <label className="flex items-center space-x-2 text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4">
+              <label className="flex items-center space-x-1.5 text-sm md:text-lg font-semibold text-gray-900 mb-3 md:mb-4">
                 <Building2 className="h-4 w-4 md:h-5 md:w-5 text-sky-600" />
                 <span>Выберите клинику</span>
               </label>
 
               <div className="relative mb-3 md:mb-4">
-                <Search className="absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-gray-400" />
+                <Search className="absolute left-2.5 md:left-4 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 md:h-5 md:w-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Поиск клиники..."
+                  placeholder="Поиск..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 md:pl-12 pr-3 md:pr-4 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg md:rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                  className="w-full pl-8 md:pl-12 pr-2.5 md:pr-4 py-2 md:py-3 text-xs md:text-base border border-gray-300 rounded-lg md:rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                 />
               </div>
 
               <div className="border border-gray-200 rounded-lg md:rounded-xl max-h-56 md:max-h-64 overflow-y-auto">
                 {filteredClinics.length === 0 ? (
-                  <div className="p-4 md:p-6 text-center text-sm md:text-base text-gray-500">
+                  <div className="p-3 md:p-6 text-center text-xs md:text-base text-gray-500">
                     Клиники не найдены
                   </div>
                 ) : (
@@ -202,16 +203,16 @@ export function BookingPage({ onBack }: BookingPageProps) {
                         setSelectedClinic(clinic.id);
                         setSearchQuery('');
                       }}
-                      className={`w-full p-3 md:p-4 text-left transition-all border-b border-gray-100 last:border-b-0 ${
+                      className={`w-full p-2.5 md:p-4 text-left transition-all border-b border-gray-100 last:border-b-0 ${
                         selectedClinic === clinic.id
-                          ? 'bg-sky-50 border-l-4 border-l-sky-600'
+                          ? 'bg-sky-50 border-l-2 md:border-l-4 border-l-sky-600'
                           : 'hover:bg-gray-50 active:bg-gray-100'
                       }`}
                     >
-                      <div className="font-semibold text-sm md:text-base text-gray-900 mb-1">{clinic.name}</div>
-                      <div className="flex items-center space-x-1 text-xs md:text-sm text-gray-600">
-                        <MapPin className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
-                        <span>{clinic.address}, {clinic.city}</span>
+                      <div className="font-semibold text-xs md:text-base text-gray-900 mb-0.5 md:mb-1 leading-tight">{clinic.name}</div>
+                      <div className="flex items-center space-x-1 text-[10px] md:text-sm text-gray-600">
+                        <MapPin className="h-2.5 w-2.5 md:h-4 md:w-4 flex-shrink-0" />
+                        <span className="leading-tight">{clinic.address}, {clinic.city}</span>
                       </div>
                     </button>
                   ))
@@ -219,14 +220,14 @@ export function BookingPage({ onBack }: BookingPageProps) {
               </div>
 
               {selectedClinic && (
-                <div className="mt-3 md:mt-4 p-3 md:p-4 bg-sky-50 border border-sky-200 rounded-lg md:rounded-xl">
-                  <div className="flex items-start space-x-2">
-                    <Building2 className="h-4 w-4 md:h-5 md:w-5 text-sky-600 mt-0.5 flex-shrink-0" />
+                <div className="mt-2.5 md:mt-4 p-2.5 md:p-4 bg-sky-50 border border-sky-200 rounded-lg md:rounded-xl">
+                  <div className="flex items-start space-x-1.5 md:space-x-2">
+                    <Building2 className="h-3.5 w-3.5 md:h-5 md:w-5 text-sky-600 mt-0.5 flex-shrink-0" />
                     <div>
-                      <div className="font-semibold text-sm md:text-base text-sky-900">
+                      <div className="font-semibold text-xs md:text-base text-sky-900 leading-tight">
                         {clinics.find(c => c.id === selectedClinic)?.name}
                       </div>
-                      <div className="text-xs md:text-sm text-sky-700">
+                      <div className="text-[10px] md:text-sm text-sky-700 leading-tight">
                         {clinics.find(c => c.id === selectedClinic)?.address}
                       </div>
                     </div>
@@ -236,30 +237,30 @@ export function BookingPage({ onBack }: BookingPageProps) {
             </div>
 
             <div>
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 md:mb-4 gap-3">
-                <label className="flex items-center space-x-2 text-base md:text-lg font-semibold text-gray-900">
+              <div className="mb-3 md:mb-4 space-y-2">
+                <label className="flex items-center space-x-1.5 text-sm md:text-lg font-semibold text-gray-900">
                   <Calendar className="h-4 w-4 md:h-5 md:w-5 text-sky-600" />
                   <span>Выберите день</span>
                 </label>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between gap-1.5">
                   <button
                     type="button"
                     onClick={goToPreviousWeek}
-                    className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                    className="p-1.5 md:p-2 rounded-md md:rounded-lg border border-gray-300 hover:bg-gray-50 active:bg-gray-100 transition-colors flex-shrink-0"
                     title="Предыдущая неделя"
                   >
                     <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-gray-600" />
                   </button>
 
-                  <div className="text-xs md:text-sm font-medium text-gray-700 min-w-[140px] md:min-w-[160px] text-center">
+                  <div className="text-[11px] md:text-sm font-medium text-gray-700 flex-1 text-center px-1">
                     {getWeekRange()}
                   </div>
 
                   <button
                     type="button"
                     onClick={goToNextWeek}
-                    className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                    className="p-1.5 md:p-2 rounded-md md:rounded-lg border border-gray-300 hover:bg-gray-50 active:bg-gray-100 transition-colors flex-shrink-0"
                     title="Следующая неделя"
                   >
                     <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-gray-600" />
@@ -269,7 +270,7 @@ export function BookingPage({ onBack }: BookingPageProps) {
                     <button
                       type="button"
                       onClick={goToCurrentWeek}
-                      className="ml-2 px-3 py-1.5 text-xs md:text-sm bg-sky-100 text-sky-700 rounded-lg hover:bg-sky-200 transition-colors font-medium"
+                      className="px-2 md:px-3 py-1 md:py-1.5 text-[10px] md:text-sm bg-sky-100 text-sky-700 rounded-md md:rounded-lg hover:bg-sky-200 transition-colors font-medium flex-shrink-0"
                     >
                       Сегодня
                     </button>
@@ -277,7 +278,7 @@ export function BookingPage({ onBack }: BookingPageProps) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-7 gap-1 sm:gap-1.5 md:gap-3">
+              <div className="grid grid-cols-7 gap-0.5 sm:gap-1.5 md:gap-3">
                 {weekDays.map((day, index) => {
                   const dateStr = day.toISOString().split('T')[0];
                   const isPast = day < new Date(new Date().setHours(0, 0, 0, 0));
@@ -288,7 +289,7 @@ export function BookingPage({ onBack }: BookingPageProps) {
                       type="button"
                       onClick={() => !isPast && setSelectedDate(dateStr)}
                       disabled={isPast}
-                      className={`p-1.5 sm:p-2 md:p-4 rounded-md md:rounded-xl border-2 text-center transition-all min-h-[60px] sm:min-h-[70px] md:min-h-0 flex flex-col justify-center ${
+                      className={`p-1 sm:p-2 md:p-4 rounded-sm sm:rounded-md md:rounded-xl border sm:border-2 text-center transition-all min-h-[50px] sm:min-h-[70px] md:min-h-0 flex flex-col justify-center ${
                         isPast
                           ? 'border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed'
                           : selectedDate === dateStr
@@ -296,12 +297,12 @@ export function BookingPage({ onBack }: BookingPageProps) {
                           : 'border-gray-200 hover:border-sky-300 active:bg-sky-50 active:border-sky-400'
                       }`}
                     >
-                      <div className={`text-[9px] sm:text-[10px] md:text-sm font-medium mb-0.5 sm:mb-1 uppercase ${
+                      <div className={`text-[8px] leading-tight sm:text-[10px] md:text-sm font-medium mb-0.5 sm:mb-1 uppercase tracking-tight ${
                         isPast ? 'text-gray-400' : isToday(day) ? 'text-sky-600 font-semibold' : 'text-gray-600'
                       }`}>
                         {getDayName(day)}
                       </div>
-                      <div className={`text-xs sm:text-sm md:text-lg font-bold leading-tight ${
+                      <div className={`text-[11px] sm:text-sm md:text-lg font-bold leading-none ${
                         isPast ? 'text-gray-400' : selectedDate === dateStr ? 'text-sky-700' : 'text-gray-900'
                       }`}>
                         {formatDate(day)}
@@ -313,18 +314,18 @@ export function BookingPage({ onBack }: BookingPageProps) {
             </div>
 
             <div>
-              <label className="flex items-center space-x-2 text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4">
+              <label className="flex items-center space-x-1.5 text-sm md:text-lg font-semibold text-gray-900 mb-3 md:mb-4">
                 <Clock className="h-4 w-4 md:h-5 md:w-5 text-sky-600" />
                 <span>Выберите время</span>
               </label>
-              <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3">
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-1.5 md:gap-3">
                 {timeSlots.map((time) => (
                   <button
                     key={time}
                     type="button"
                     onClick={() => setSelectedTime(time)}
                     disabled={!selectedDate}
-                    className={`py-2.5 md:py-3 px-3 md:px-4 rounded-lg md:rounded-xl border-2 font-medium text-sm md:text-base transition-all ${
+                    className={`py-2 md:py-3 px-2 md:px-4 rounded-md md:rounded-xl border sm:border-2 font-medium text-xs md:text-base transition-all ${
                       !selectedDate
                         ? 'border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed'
                         : selectedTime === time
@@ -338,11 +339,11 @@ export function BookingPage({ onBack }: BookingPageProps) {
               </div>
             </div>
 
-            <div className="border-t pt-6 md:pt-8">
-              <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4">Ваши контактные данные</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+            <div className="border-t pt-5 md:pt-8">
+              <h3 className="text-sm md:text-lg font-semibold text-gray-900 mb-3 md:mb-4">Ваши контактные данные</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 md:gap-4">
                 <div>
-                  <label className="flex items-center space-x-2 text-xs md:text-sm font-medium text-gray-700 mb-2">
+                  <label className="flex items-center space-x-1.5 text-[11px] md:text-sm font-medium text-gray-700 mb-1.5 md:mb-2">
                     <User className="h-3 w-3 md:h-4 md:w-4" />
                     <span>Ваше имя *</span>
                   </label>
@@ -351,13 +352,13 @@ export function BookingPage({ onBack }: BookingPageProps) {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg md:rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                    className="w-full px-2.5 md:px-4 py-2 md:py-3 text-xs md:text-base border border-gray-300 rounded-lg md:rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                     placeholder="Иван Иванов"
                   />
                 </div>
 
                 <div>
-                  <label className="flex items-center space-x-2 text-xs md:text-sm font-medium text-gray-700 mb-2">
+                  <label className="flex items-center space-x-1.5 text-[11px] md:text-sm font-medium text-gray-700 mb-1.5 md:mb-2">
                     <Phone className="h-3 w-3 md:h-4 md:w-4" />
                     <span>Телефон *</span>
                   </label>
@@ -366,13 +367,13 @@ export function BookingPage({ onBack }: BookingPageProps) {
                     required
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg md:rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                    className="w-full px-2.5 md:px-4 py-2 md:py-3 text-xs md:text-base border border-gray-300 rounded-lg md:rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                     placeholder="+998 90 123 45 67"
                   />
                 </div>
 
                 <div>
-                  <label className="flex items-center space-x-2 text-xs md:text-sm font-medium text-gray-700 mb-2">
+                  <label className="flex items-center space-x-1.5 text-[11px] md:text-sm font-medium text-gray-700 mb-1.5 md:mb-2">
                     <Mail className="h-3 w-3 md:h-4 md:w-4" />
                     <span>Email (необязательно)</span>
                   </label>
@@ -380,37 +381,37 @@ export function BookingPage({ onBack }: BookingPageProps) {
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg md:rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+                    className="w-full px-2.5 md:px-4 py-2 md:py-3 text-xs md:text-base border border-gray-300 rounded-lg md:rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                     placeholder="ivan@example.com"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs md:text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-[11px] md:text-sm font-medium text-gray-700 mb-1.5 md:mb-2">
                     Примечания (необязательно)
                   </label>
                   <textarea
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                     rows={1}
-                    className="w-full px-3 md:px-4 py-2.5 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg md:rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 resize-none"
+                    className="w-full px-2.5 md:px-4 py-2 md:py-3 text-xs md:text-base border border-gray-300 rounded-lg md:rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 resize-none"
                     placeholder="Дополнительная информация..."
                   />
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4 md:pt-6">
+            <div className="flex flex-col sm:flex-row gap-2.5 md:gap-4 pt-4 md:pt-6">
               <button
                 type="submit"
-                className="flex-1 px-6 md:px-8 py-3 md:py-4 bg-sky-600 text-white rounded-lg md:rounded-xl hover:bg-sky-700 active:bg-sky-800 transition-colors font-semibold text-base md:text-lg shadow-lg shadow-sky-200"
+                className="flex-1 px-4 md:px-8 py-2.5 md:py-4 bg-sky-600 text-white rounded-lg md:rounded-xl hover:bg-sky-700 active:bg-sky-800 transition-colors font-semibold text-sm md:text-lg shadow-lg shadow-sky-200"
               >
                 Отправить заявку
               </button>
               <button
                 type="button"
                 onClick={onBack}
-                className="px-6 md:px-8 py-3 md:py-4 border-2 border-gray-300 text-gray-700 rounded-lg md:rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors font-semibold text-base md:text-base"
+                className="px-4 md:px-8 py-2.5 md:py-4 border-2 border-gray-300 text-gray-700 rounded-lg md:rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors font-semibold text-sm md:text-base"
               >
                 Отмена
               </button>
