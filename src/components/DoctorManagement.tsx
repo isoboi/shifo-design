@@ -20,10 +20,19 @@ export function DoctorManagement({
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
   const [showSpecializationsManager, setShowSpecializationsManager] = useState(false);
+  const [showProceduresManager, setShowProceduresManager] = useState(false);
   const [newSpecialization, setNewSpecialization] = useState('');
+  const [newProcedure, setNewProcedure] = useState('');
   const [specializations, setSpecializations] = useLocalStorage<string[]>('specializations', [
     'Терапевт', 'Кардиолог', 'Невролог', 'Хирург', 'Офтальмолог',
     'Отоларинголог', 'Гинеколог', 'Уролог', 'Дерматолог', 'Педиатр'
+  ]);
+  const [procedures, setProcedures] = useLocalStorage<Array<{id: string; name: string; createdAt: string}>>('procedures', [
+    { id: '1', name: 'Общий анализ крови', createdAt: new Date().toISOString() },
+    { id: '2', name: 'ЭКГ', createdAt: new Date().toISOString() },
+    { id: '3', name: 'УЗИ', createdAt: new Date().toISOString() },
+    { id: '4', name: 'Рентген', createdAt: new Date().toISOString() },
+    { id: '5', name: 'Флюорография', createdAt: new Date().toISOString() }
   ]);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -142,6 +151,22 @@ export function DoctorManagement({
     setSpecializations(specializations.filter(s => s !== spec));
   };
 
+  const handleAddProcedure = () => {
+    if (newProcedure.trim() && !procedures.some(p => p.name === newProcedure.trim())) {
+      const newProc = {
+        id: Date.now().toString(),
+        name: newProcedure.trim(),
+        createdAt: new Date().toISOString()
+      };
+      setProcedures([...procedures, newProc]);
+      setNewProcedure('');
+    }
+  };
+
+  const handleDeleteProcedure = (id: string) => {
+    setProcedures(procedures.filter(p => p.id !== id));
+  };
+
   return (
     <div className="space-y-4 md:space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -153,6 +178,13 @@ export function DoctorManagement({
           >
             <Settings size={18} />
             <span className="text-sm md:text-base">Специализации</span>
+          </button>
+          <button
+            onClick={() => setShowProceduresManager(!showProceduresManager)}
+            className="bg-emerald-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-emerald-700 transition-colors justify-center"
+          >
+            <Settings size={18} />
+            <span className="text-sm md:text-base">Процедуры</span>
           </button>
           <button
             onClick={() => setShowAddForm(true)}
@@ -225,6 +257,66 @@ export function DoctorManagement({
                       onClick={() => handleDeleteSpecialization(spec)}
                       className="ml-2 p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
                       title="Удалить специализацию"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Менеджер процедур */}
+      {showProceduresManager && (
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg md:text-xl font-semibold text-gray-900">Управление процедурами</h2>
+            <button
+              onClick={() => setShowProceduresManager(false)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Новая процедура..."
+                value={newProcedure}
+                onChange={(e) => setNewProcedure(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleAddProcedure()}
+                className="flex-1 px-3 py-2 text-sm md:text-base border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              />
+              <button
+                onClick={handleAddProcedure}
+                className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors flex items-center space-x-2"
+              >
+                <Plus size={18} />
+                <span className="text-sm md:text-base">Добавить</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {procedures.map((procedure) => {
+                return (
+                  <div
+                    key={procedure.id}
+                    className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg border border-emerald-200 hover:shadow-sm transition-shadow"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 text-sm md:text-base truncate">{procedure.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(procedure.createdAt).toLocaleDateString('ru-RU')}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleDeleteProcedure(procedure.id)}
+                      className="ml-2 p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
+                      title="Удалить процедуру"
                     >
                       <Trash2 size={16} />
                     </button>

@@ -84,3 +84,9 @@ export interface Expense {
   notes?: string;
   createdAt: string;
 }
+
+export interface Procedure {
+  id: string;
+  name: string;
+  createdAt: string;
+}
