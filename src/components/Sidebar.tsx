@@ -9,7 +9,8 @@ import {
   Activity,
   TrendingDown,
   Languages,
-  X
+  X,
+  Clipboard
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -27,6 +28,7 @@ const menuItems = [
   { id: 'doctors', label: 'Врачи', icon: UserCheck },
   { id: 'appointments', label: 'Записи', icon: Calendar },
   { id: 'finances', label: 'Финансы', icon: CreditCard },
+  { id: 'laboratory', label: 'Лаборатория', icon: Clipboard },
   { id: 'analytics', label: 'Аналитика', icon: Activity },
   { id: 'settings', label: 'Настройки', icon: Settings },
 ];

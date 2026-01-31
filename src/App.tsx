@@ -8,9 +8,10 @@ import { DoctorManagement } from './components/DoctorManagement';
 import { AppointmentScheduler } from './components/AppointmentScheduler';
 import { FinanceManagement } from './components/FinanceManagement';
 import { Analytics } from './components/Analytics';
+import { Laboratory } from './components/Laboratory';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { mockPatients, mockDoctors, mockAppointments, mockPayments } from './data/mockData';
-import { Patient, Doctor, Appointment, Payment, Expense } from './types';
+import { Patient, Doctor, Appointment, Payment, Expense, LabResult } from './types';
 
 function App() {
   const [showLanding, setShowLanding] = useState(true);
@@ -23,6 +24,7 @@ function App() {
   const [appointments, setAppointments] = useLocalStorage<Appointment[]>('appointments', mockAppointments);
   const [payments, setPayments] = useLocalStorage<Payment[]>('payments', mockPayments);
   const [expenses, setExpenses] = useLocalStorage<Expense[]>('expenses', []);
+  const [labResults, setLabResults] = useLocalStorage<LabResult[]>('labResults', []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -133,6 +135,23 @@ function App() {
     setExpenses(expenses.filter(e => e.id !== id));
   };
 
+  const handleAddLabResult = (resultData: Omit<LabResult, 'id' | 'createdAt'>) => {
+    const newResult: LabResult = {
+      ...resultData,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString()
+    };
+    setLabResults([...labResults, newResult]);
+  };
+
+  const handleUpdateLabResult = (id: string, updates: Partial<LabResult>) => {
+    setLabResults(labResults.map(r => r.id === id ? { ...r, ...updates } : r));
+  };
+
+  const handleDeleteLabResult = (id: string) => {
+    setLabResults(labResults.filter(r => r.id !== id));
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -185,6 +204,17 @@ function App() {
             onAddExpense={handleAddExpense}
             onUpdateExpense={handleUpdateExpense}
             onDeleteExpense={handleDeleteExpense}
+          />
+        );
+      case 'laboratory':
+        return (
+          <Laboratory
+            labResults={labResults}
+            patients={patients}
+            doctors={doctors}
+            onAddLabResult={handleAddLabResult}
+            onUpdateLabResult={handleUpdateLabResult}
+            onDeleteLabResult={handleDeleteLabResult}
           />
         );
       case 'analytics':

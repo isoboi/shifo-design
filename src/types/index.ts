@@ -90,3 +90,19 @@ export interface Procedure {
   name: string;
   createdAt: string;
 }
+
+export interface LabResult {
+  id: string;
+  patientId: string;
+  doctorId: string;
+  testType: 'blood' | 'biochemistry' | 'urine' | 'hormone' | 'immunology' | 'microbiology' | 'other';
+  testName: string;
+  result: string;
+  referenceRange?: string;
+  unit?: string;
+  status: 'pending' | 'completed' | 'reviewed';
+  notes?: string;
+  testDate: string;
+  createdAt: string;
+  updatedAt?: string;
+}
